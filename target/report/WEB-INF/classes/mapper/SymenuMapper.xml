@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sumao.dao.SymenuMapper">
+	<resultMap id="BaseResultMap" type="com.sumao.model.Symenu">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="PID" property="pid" jdbcType="VARCHAR" />
+		<result column="TEXT" property="text" jdbcType="VARCHAR" />
+		<result column="ICONCLS" property="iconcls" jdbcType="VARCHAR" />
+		<result column="SRC" property="src" jdbcType="VARCHAR" />
+		<result column="SEQ" property="seq" jdbcType="DECIMAL" />
+		<result column="CODE" property="code" jdbcType="VARCHAR" />
+		<result column="MLEVEL" property="mlevel" jdbcType="DECIMAL" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		ID, PID, TEXT, ICONCLS, SRC, SEQ, CODE, MLEVEL
+	</sql>
+
+	<!-- 根据菜单ID查询菜单信息 -->
+	<select id="findMemusById" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.SYMENU 
+		<if test="id != null">
+			where ID = #{id, jdbcType=VARCHAR}
+		</if>
+		order by code, mlevel
+
+	</select>
+
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.SYMENU
+		where ID = #{id,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from uat_prod0109.SYMENU
+		where ID = #{id,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.sumao.model.Symenu">
+		insert into uat_prod0109.SYMENU (ID, PID,
+		TEXT,
+		ICONCLS, SRC, SEQ,
+		CODE, MLEVEL)
+		values (#{id,jdbcType=VARCHAR},
+		#{pid,jdbcType=VARCHAR},
+		#{text,jdbcType=VARCHAR},
+		#{iconcls,jdbcType=VARCHAR}, #{src,jdbcType=VARCHAR},
+		#{seq,jdbcType=DECIMAL},
+		#{code,jdbcType=VARCHAR},
+		#{mlevel,jdbcType=DECIMAL})
+	</insert>
+	<insert id="insertSelective" parameterType="com.sumao.model.Symenu">
+		insert into uat_prod0109.SYMENU
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				ID,
+			</if>
+			<if test="pid != null">
+				PID,
+			</if>
+			<if test="text != null">
+				TEXT,
+			</if>
+			<if test="iconcls != null">
+				ICONCLS,
+			</if>
+			<if test="src != null">
+				SRC,
+			</if>
+			<if test="seq != null">
+				SEQ,
+			</if>
+			<if test="code != null">
+				CODE,
+			</if>
+			<if test="mlevel != null">
+				MLEVEL,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="pid != null">
+				#{pid,jdbcType=VARCHAR},
+			</if>
+			<if test="text != null">
+				#{text,jdbcType=VARCHAR},
+			</if>
+			<if test="iconcls != null">
+				#{iconcls,jdbcType=VARCHAR},
+			</if>
+			<if test="src != null">
+				#{src,jdbcType=VARCHAR},
+			</if>
+			<if test="seq != null">
+				#{seq,jdbcType=DECIMAL},
+			</if>
+			<if test="code != null">
+				#{code,jdbcType=VARCHAR},
+			</if>
+			<if test="mlevel != null">
+				#{mlevel,jdbcType=DECIMAL},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.sumao.model.Symenu">
+		update uat_prod0109.SYMENU
+		<set>
+			<if test="pid != null">
+				PID = #{pid,jdbcType=VARCHAR},
+			</if>
+			<if test="text != null">
+				TEXT = #{text,jdbcType=VARCHAR},
+			</if>
+			<if test="iconcls != null">
+				ICONCLS = #{iconcls,jdbcType=VARCHAR},
+			</if>
+			<if test="src != null">
+				SRC = #{src,jdbcType=VARCHAR},
+			</if>
+			<if test="seq != null">
+				SEQ = #{seq,jdbcType=DECIMAL},
+			</if>
+			<if test="code != null">
+				CODE = #{code,jdbcType=VARCHAR},
+			</if>
+			<if test="mlevel != null">
+				MLEVEL = #{mlevel,jdbcType=DECIMAL},
+			</if>
+		</set>
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.sumao.model.Symenu">
+		update uat_prod0109.SYMENU
+		set
+		PID = #{pid,jdbcType=VARCHAR},
+		TEXT = #{text,jdbcType=VARCHAR},
+		ICONCLS
+		= #{iconcls,jdbcType=VARCHAR},
+		SRC = #{src,jdbcType=VARCHAR},
+		SEQ =
+		#{seq,jdbcType=DECIMAL},
+		CODE = #{code,jdbcType=VARCHAR},
+		MLEVEL =
+		#{mlevel,jdbcType=DECIMAL}
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+</mapper>

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sumao.dao.PaydepositbalanceMapper">
+	<!-- 表和模型映射关系维护 -->
+	<resultMap id="BaseResultMap" type="com.sumao.model.Paydepositbalance">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="seller" property="seller" jdbcType="VARCHAR" />
+		<result column="marketing" property="marketing" jdbcType="VARCHAR" />
+		<result column="marketingid" property="marketingid" jdbcType="VARCHAR" />
+		<result column="ordernumber" property="ordernumber" jdbcType="VARCHAR" />
+		<result column="productbrand" property="productbrand" jdbcType="VARCHAR" />
+		<result column="exchangemodel" property="exchangemodel" jdbcType="VARCHAR" />
+		<result column="measuredimension" property="measuredimension" jdbcType="VARCHAR" />
+		<result column="productcategory" property="productcategory" jdbcType="VARCHAR" />
+		<result column="productapplication" property="productapplication" jdbcType="VARCHAR" />
+		<result column="buyerid" property="buyerid" jdbcType="VARCHAR" />
+		<result column="deductingmoney" property="deductingmoney" jdbcType="VARCHAR" />
+		<result column="createperson" property="createperson" jdbcType="VARCHAR" />
+		<result column="createtime" property="createtime" jdbcType="VARCHAR" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="codeid" property="codeid" jdbcType="VARCHAR" />
+		<result column="remark1" property="remark1" jdbcType="VARCHAR" />
+		<result column="remark2" property="remark2" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 表的字段属性 -->
+	<sql id="Base_Column_List">
+		ID, seller, marketing, marketingid, ordernumber, productbrand, exchangemodel, measuredimension,productcategory,productapplication,buyerid,deductingmoney,createperson,createtime,remark,remark1,remark2,codeid
+	</sql>
+
+	<!-- 查询信息列表 -->
+	<select id="findPayrList" resultMap="BaseResultMap" parameterType="com.sumao.model.Paydepositbalance">
+		select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.pay_depositbalance where seller LIKE '%${seller}%' and marketing LIKE '%${marketing}%' 
+		 and marketingid LIKE '%${marketingid}%' 
+		
+	</select>
+	
+	<select id="findPayrTotal" resultType="java.lang.Integer" parameterType="com.sumao.model.Paydepositbalance">
+		
+		select count(ID) from (select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.pay_depositbalance where seller LIKE '%${seller}%' and marketing LIKE '%${marketing}%' 
+		 and marketingid LIKE '%${marketingid}%' 
+		 )
+		 
+	</select>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.pay_depositbalance where ID = #{id,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from uat_prod0109.pay_depositbalance
+		where ID = #{id,jdbcType=VARCHAR}
+	</delete>
+	
+	<update id="editaudit" parameterType="java.lang.String">
+		update uat_prod0109.pay_depositbalance 
+		set remark ='已通过' 
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	<insert id="insert" parameterType="com.sumao.model.Paydepositbalance">
+		insert into uat_prod0109.pay_depositbalance (ID, seller, marketing, marketingid, ordernumber, productbrand, 
+		exchangemodel, measuredimension, productcategory, productapplication,buyerid,deductingmoney,createperson,createtime, remark,remark1,remark2,codeid) values (
+		#{id,jdbcType=VARCHAR},
+		#{seller,jdbcType=VARCHAR},
+		#{marketing,jdbcType=VARCHAR},
+		#{marketingid,jdbcType=VARCHAR},
+		#{ordernumber,jdbcType=VARCHAR},
+		#{productbrand,jdbcType=VARCHAR},
+		#{exchangemodel,jdbcType=VARCHAR},
+		#{measuredimension,jdbcType=VARCHAR},
+		#{productcategory,jdbcType=VARCHAR},
+		#{productapplication,jdbcType=VARCHAR},
+		#{buyerid,jdbcType=VARCHAR},
+		#{deductingmoney,jdbcType=VARCHAR},
+		#{createperson,jdbcType=VARCHAR},
+		#{createtime,jdbcType=VARCHAR},
+		#{remark,jdbcType=VARCHAR},
+		#{remark1,jdbcType=VARCHAR},
+		#{remark2,jdbcType=VARCHAR},
+		#{codeid,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<update id="updateByPrimaryKey" parameterType="com.sumao.model.Paydepositbalance">
+		update uat_prod0109.pay_depositbalance 
+		set 
+		seller = #{seller,jdbcType=VARCHAR},
+		marketing =	#{marketing,jdbcType=VARCHAR},
+		marketingid =#{marketingid,jdbcType=VARCHAR},
+		ordernumber =#{ordernumber,jdbcType=VARCHAR},
+		productbrand =#{productbrand,jdbcType=VARCHAR},
+		exchangemodel =#{exchangemodel,jdbcType=VARCHAR},
+		measuredimension =#{measuredimension,jdbcType=VARCHAR},
+		productcategory =#{productcategory,jdbcType=VARCHAR},
+		productapplication =#{productapplication,jdbcType=VARCHAR},
+		buyerid =#{buyerid,jdbcType=VARCHAR},
+		deductingmoney =#{deductingmoney,jdbcType=VARCHAR},
+		createperson =#{createperson,jdbcType=VARCHAR},
+		createtime =#{createtime,jdbcType=VARCHAR},
+		remark1 =#{remark1,jdbcType=VARCHAR},
+		remark2 =#{remark2,jdbcType=VARCHAR},
+		remark =#{remark,jdbcType=VARCHAR} 
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 查询销售ID、交易模式、产品总数量、买方唯一标识-->
+	<select id="findinfoma" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select sum(quantity) as remark1,saler_id as marketingid,saler_enterprise_name as seller,saler_name as marketing,chname as exchangemodel,enterpriseid as buyerid from
+		(select dorder.order_id,dorder.profile_id,ite.quantity,desorss.chname,other.saler_id,other.saler_name,
+		other.saler_enterprise_name,userinfo.enterpriseid from uat_PROD0109.dcspp_order dorder 
+		left join uat_PROD0109.sumao_order_other other on dorder.order_id=other.order_id 
+		left join (select order_id,chname from uat_PROD0109.dcspp_order desor left join uat_prod0109.pay_dictionary pay on 
+		pay.serialid=desor.type where pay.type='jyms') desorss on dorder.order_id=desorss.order_id 
+		left join (select order_id,quantity from uat_prod0109.dcspp_order_item itemss left join uat_prod0109.DCSPP_ITEM item on 
+		itemss.commerce_items=item.commerce_item_id) ite on dorder.order_id=ite.order_id left join(select duser.id,info.enterpriseid 
+		from uat_prod0109.dps_user duser left join uat_prod0109.sumao_enterprise_info info on 
+		info.enterpriseid=duser.enterpriseid)userinfo on dorder.profile_id=userinfo.id)
+		where order_id=#{buyerordernum,jdbcType=VARCHAR} group by saler_id,chname,enterpriseid,saler_enterprise_name,saler_name
+		
+	</select>
+	
+	<select id="allweight" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+		select nvl(sum(remark1),0)  
+		from uat_prod0109.pay_depositbalance where marketingid=#{marketingid,jdbcType=VARCHAR} and exchangemodel=#{tradingpatterns,jdbcType=VARCHAR} 
+		and buyerid=#{buyerid,jdbcType=VARCHAR} and remark2<![CDATA[>=]]>#{effectivetime,jdbcType=VARCHAR} and remark2<![CDATA[<=]]>#{invalidtime,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="allorder" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+		select count(remark2) 
+		from uat_prod0109.pay_depositbalance where marketingid=#{marketingid,jdbcType=VARCHAR} and exchangemodel=#{tradingpatterns,jdbcType=VARCHAR} 
+		and buyerid=#{buyerid,jdbcType=VARCHAR} and remark2<![CDATA[>=]]>#{effectivetime,jdbcType=VARCHAR} and remark2<![CDATA[<=]]>#{invalidtime,jdbcType=VARCHAR}
+	</select>
+
+	<!-- 通过视图，查询符合结算条件的订单信息列表 -->
+	<select id="getOrderBalanceInfo" resultMap="BaseResultMap" parameterType="com.sumao.model.Paydepositbalance">
+		select * from uat_prod0109.pay_order_views where ordernumber like '%${ordernumber}%' and marketingid like '%${marketingid}%' order by remark2 
+	</select>
+	
+	<select id="sellerallweight" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+		select nvl(sum(remark1),0)  
+		from uat_prod0109.pay_depositbalance where marketingid=#{marketingid,jdbcType=VARCHAR} and exchangemodel=#{tradingpatterns,jdbcType=VARCHAR} 
+		and ordernumber!='退费' and remark2<![CDATA[>=]]>#{effectivetime,jdbcType=VARCHAR} and remark2<![CDATA[<=]]>#{invalidtime,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="sellerallorder" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+		select count(remark2) 
+		from uat_prod0109.pay_depositbalance where marketingid=#{marketingid,jdbcType=VARCHAR} and exchangemodel=#{tradingpatterns,jdbcType=VARCHAR} 
+		and ordernumber!='退费' and remark2<![CDATA[>=]]>#{effectivetime,jdbcType=VARCHAR} and remark2<![CDATA[<=]]>#{invalidtime,jdbcType=VARCHAR}
+	</select>
+	
+	<update id="UpdateBondByMID" parameterType="com.sumao.model.Paybond">
+		update uat_prod0109.pay_bond 
+		set havedeposit =To_char(To_number(havedeposit)+${havedeposit}) 
+		where marketingid=#{marketingid,jdbcType=VARCHAR} and approve='已通过' and subitemname like '%保证金%'
+	</update>
+	
+	
+	<update id="UpdateWarnBond" >
+		update uat_prod0109.pay_bond set whetheralerted='是' where approve='已通过' and (To_number(havedeposit)<![CDATA[<=]]>To_number(warningsum))
+	</update>
+	
+	<update id="UpdateWarnBondNO" >
+		update uat_prod0109.pay_bond set whetheralerted='' where approve='已通过' and (To_number(havedeposit)<![CDATA[>]]>To_number(warningsum))
+	</update>
+	
+</mapper>

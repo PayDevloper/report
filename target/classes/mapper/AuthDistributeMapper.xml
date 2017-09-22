@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sumao.dao.AuthDistributeMapper">
+	<resultMap id="AuthdisMap" type="com.sumao.model.Paysub">
+	    <id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="ROLE_ID" property="totalname" jdbcType="VARCHAR" />
+		<result column="ROLE_NAME" property="subname" jdbcType="VARCHAR" />
+		<result column="RESOURCES_ID" property="totalid" jdbcType="VARCHAR" />
+		<result column="RESOUCES_NAME" property="financeacc" jdbcType="VARCHAR" />
+		<result column="operuser" property="operuser" jdbcType="VARCHAR" />
+		<result column="CREATETIME" property="operdate" jdbcType="VARCHAR" />
+		<result column="MODIFIEDTIME" property="remark1" jdbcType="VARCHAR" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="AUTHNAME" property="codeid" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="BaseRoleMap" type="com.sumao.model.Paysub">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="TEXT" property="subname" jdbcType="VARCHAR" />
+		<result column="DESCRIPT" property="remark" jdbcType="VARCHAR" />
+        <result column="USERID" property="totalid" jdbcType="VARCHAR" />
+		<result column="USERNAME" property="totalname" jdbcType="VARCHAR" />
+		<result column="CREATETIME" property="operdate" jdbcType="VARCHAR" />	
+		<result column="MODIFIEDTIME" property="remark1" jdbcType="VARCHAR" />
+		<result column="operuser" property="operuser" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="BaseResoucesMap" type="com.sumao.model.Paysub">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="PID" property="subname" jdbcType="VARCHAR" />
+		<result column="TEXT" property="financeacc" jdbcType="VARCHAR" />
+        <result column="SRC" property="totalid" jdbcType="VARCHAR" />
+		<result column="SYSCODE" property="totalname" jdbcType="VARCHAR" />
+		<result column="MLEVEL" property="operdate" jdbcType="VARCHAR" />	
+		<result column="REMARK1" property="remark1" jdbcType="VARCHAR" />
+		<result column="ISBASIC" property="codeid" jdbcType="VARCHAR" />
+	</resultMap>
+	<!-- 岗位表的字段属性 -->
+	<sql id="Authdis_Column_List">
+		ID, ROLE_ID, ROLE_NAME,RESOURCES_ID,RESOUCES_NAME,CREATETIME,MODIFIEDTIME,operuser,remark,AUTHNAME
+	</sql>
+	<!-- 角色表的字段属性 -->
+	<sql id="Role_Column_List">
+		ID, TEXT, DESCRIPT,USERID,USERNAME,CREATETIME,MODIFIEDTIME,operuser
+	</sql>
+	<!-- 资源表的字段属性 -->
+	<sql id="Resource_Column_List">
+		ID, PID, TEXT,SRC,SYSCODE,MLEVEL,REMARK1,ISBASIC
+	</sql>
+	<!-- 插入一条新数据权限表 -->
+<insert id="insert" parameterType="com.sumao.model.Paysub">
+		insert into UAT_PROD0109.SYROLE_SYRESOURCES (ID, ROLE_ID, RESOURCES_ID, AUTHNAME, operuser,RESOUCES_NAME,ROLE_NAME,remark,CREATETIME) values (
+		#{id,jdbcType=VARCHAR},
+		#{totalname,jdbcType=VARCHAR},
+		#{totalid,jdbcType=VARCHAR},
+		#{codeid,jdbcType=VARCHAR},
+		#{operuser,jdbcType=VARCHAR},
+		#{financeacc,jdbcType=VARCHAR},
+		#{subname,jdbcType=VARCHAR},
+		#{remark,jdbcType=VARCHAR},
+		#{operdate,jdbcType=VARCHAR}
+		)
+	</insert>
+	<!-- 更新一条新数据权限表 -->
+<update id="updateByPrimaryKey" parameterType="com.sumao.model.Paysub">
+		update UAT_PROD0109.SYROLE_SYRESOURCES 
+		set 
+		ROLE_ID = #{totalname,jdbcType=VARCHAR},
+		RESOURCES_ID =#{totalid,jdbcType=VARCHAR},
+		AUTHNAME =#{codeid,jdbcType=VARCHAR},
+		operuser =#{operuser,jdbcType=VARCHAR},
+		RESOUCES_NAME =#{financeacc,jdbcType=VARCHAR},
+		ROLE_NAME =#{subname,jdbcType=VARCHAR},
+		remark =#{remark,jdbcType=VARCHAR},
+		MODIFIEDTIME =#{operdate,jdbcType=VARCHAR}
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	<!-- 查询信息列表 -->
+	<select id="finddisauthList" resultMap="AuthdisMap" parameterType="com.sumao.model.Paysub">
+		select
+		<include refid="Authdis_Column_List" />
+		from UAT_PROD0109.SYROLE_SYRESOURCES  where ROLE_NAME LIKE '%${totalname}%' and AUTHNAME LIKE '%${subname}%' 	
+	</select>
+	<!-- 根据id查询一条新数据权限表 -->
+	<select id="findinfoByid" resultMap="AuthdisMap" parameterType="java.lang.String">
+		select
+		<include refid="Authdis_Column_List" />
+		from UAT_PROD0109.SYROLE_SYRESOURCES  where  ID = #{id,jdbcType=VARCHAR}
+	</select>
+	<!-- 查询出数据权限表的总数 -->
+	<select id="disauthTotal" resultType="java.lang.Integer" parameterType="com.sumao.model.Paysub">
+		select count(id) 
+		from (select
+		<include refid="Authdis_Column_List" />
+		from UAT_PROD0109.SYROLE_SYRESOURCES  where ROLE_NAME LIKE '%${totalname}%' and AUTHNAME LIKE '%${subname}%' 	) 
+	</select>
+	<!-- 查询岗位信息列表 -->
+	<select id="findpositionList" resultMap="BaseRoleMap" parameterType="com.sumao.model.Paysub">
+		select
+		<include refid="Role_Column_List" />
+		from UAT_PROD0109.SYROLE where TEXT LIKE '%${totalname}%' and operuser LIKE '%${operuser}%'  
+	</select>
+	<!-- 查询出岗位表的总数 -->
+	<select id="findposTotal" resultType="java.lang.Integer" parameterType="com.sumao.model.Paysub">
+		select count(id) 
+		from (select
+		<include refid="Role_Column_List" />
+		from UAT_PROD0109.SYROLE where TEXT LIKE '%${totalname}%' and operuser LIKE '%${operuser}%' ) 
+	</select>
+	<!-- 查询权限资源的父类导航 -->
+	<select id="findAuthsort" resultMap="BaseResoucesMap" parameterType="com.sumao.model.Paysub">
+		select
+		<include refid="Resource_Column_List" />
+		from UAT_PROD0109.SYMENU where  PID='0'
+	</select>
+	<!-- 查询权限资源的子类导航 -->
+	<select id="findSubauthort" resultMap="BaseResoucesMap" parameterType="com.sumao.model.Paysub">
+		select
+		<include refid="Resource_Column_List" />
+		from UAT_PROD0109.SYMENU
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from UAT_PROD0109.SYROLE_SYRESOURCES
+		where ID = #{id,jdbcType=VARCHAR}
+	</delete>
+	<!-- 根据权限查询导航资源列表父与子url -->
+	<select id="findsourceid" resultMap="AuthdisMap" parameterType="java.lang.String">
+	${_parameter}
+		</select>
+		<select id="findurl" resultMap="AuthdisMap" parameterType="java.lang.String">
+	${_parameter}
+		</select>
+		<!-- 查询基本授权信息列表 -->
+	<select id="disbasicauthList" resultMap="BaseResoucesMap">
+		select
+		<include refid="Resource_Column_List" />
+		from UAT_PROD0109.SYMENU  where ISBASIC='basic'
+	</select>
+	<!-- 查询出岗位表的总数 -->
+	<select id="disbasicauthTotal" resultType="java.lang.Integer">
+		select count(id) 
+		from (select
+		<include refid="Resource_Column_List" />
+		from UAT_PROD0109.SYMENU where ISBASIC='basic' ) 
+	</select>
+	<!-- 更新一条新数据权限表 -->
+     <update id="editbasic" parameterType="java.lang.String">
+		${_parameter}
+	</update>
+	<!-- 一级导航和二级导航维护 -->
+	<!-- 查询一级导航信息列表 -->
+	<select id="findnaviList" resultMap="BaseResoucesMap" parameterType="com.sumao.model.Paysub">
+		select
+		<include refid="Resource_Column_List" />
+		from UAT_PROD0109.SYMENU where TEXT LIKE '%${subname}%' and SRC LIKE '%${totalname}%'  and PID='0'
+	</select>
+	<!-- 查询出一级导航表的总数 -->
+	<select id="findnaviTotal" resultType="java.lang.Integer" parameterType="com.sumao.model.Paysub">
+		select count(id) 
+		from (select
+		<include refid="Resource_Column_List" />
+		from UAT_PROD0109.SYMENU where TEXT LIKE '%${subname}%' and SRC LIKE '%${totalname}%' and PID='0') 
+	</select>
+	<!-- 插入一条新一级导航表 -->
+<insert id="insertnavi" parameterType="com.sumao.model.Paysub">
+		insert into UAT_PROD0109.SYMENU (ID, PID, TEXT,SRC,SYSCODE,MLEVEL,REMARK1,ISBASIC) values (
+		#{id,jdbcType=VARCHAR},
+		#{subname,jdbcType=VARCHAR},
+		#{financeacc,jdbcType=VARCHAR},
+		#{totalid,jdbcType=VARCHAR},
+		#{totalname,jdbcType=VARCHAR},
+		#{operdate,jdbcType=VARCHAR},
+		#{remark1,jdbcType=VARCHAR},
+		#{codeid,jdbcType=VARCHAR}
+		)
+	</insert>
+	<!-- 更新一条一级导到权限表 -->
+<update id="editnaviByKey" parameterType="com.sumao.model.Paysub">
+		update UAT_PROD0109.SYMENU 
+		set 
+		TEXT = #{financeacc,jdbcType=VARCHAR},
+		SRC =#{totalid,jdbcType=VARCHAR}
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	<delete id="delnaviByKey" parameterType="java.lang.String">
+		delete from UAT_PROD0109.SYMENU
+		where ID = #{id,jdbcType=VARCHAR}
+	</delete>
+	<!-- 查询二级导航信息列表 -->
+	<select id="subnavidatagrid" resultMap="BaseResoucesMap" parameterType="com.sumao.model.Paysub">
+		SELECT sm.id as id,sm.pid as subname,sm.text as financeacc,sm.src as totalid,t.text as totalname FROM UAT_PROD0109.SYMENU sm 
+		left join (SELECT * FROM symenu where pid='0')t on sm.pid=t.id where sm.pid!='0' 
+		and sm.TEXT LIKE '%${subname}%' and sm.SRC LIKE '%${totalname}%' 	
+		</select>
+	<!-- 查询出二级导航表的总数 -->
+	<select id="findsubnaviTotal" resultType="java.lang.Integer" parameterType="com.sumao.model.Paysub">
+		select count(id) 
+		from (SELECT sm.id as id,sm.pid as subname,sm.text as financeacc,sm.src as totalid,t.text as totalname FROM UAT_PROD0109.SYMENU sm 
+		left join (SELECT * FROM symenu where pid='0')t on sm.pid=t.id where sm.pid!='0' 
+		and sm.TEXT LIKE '%${subname}%' and sm.SRC LIKE '%${totalname}%') 
+	</select>
+	<!-- 插入一条新二级导航表 -->
+<insert id="insertsubnavi" parameterType="com.sumao.model.Paysub">
+		insert into UAT_PROD0109.SYMENU (ID, PID, TEXT,SRC) values (
+		#{id,jdbcType=VARCHAR},
+		#{subname,jdbcType=VARCHAR},
+		#{financeacc,jdbcType=VARCHAR},
+		#{totalid,jdbcType=VARCHAR}
+		)
+	</insert>
+	<!-- 更新一条二级导航到权限表 -->
+<update id="editsubnaviByKey" parameterType="com.sumao.model.Paysub">
+		update UAT_PROD0109.SYMENU 
+		set 
+		PID = #{subname,jdbcType=VARCHAR},
+		TEXT = #{financeacc,jdbcType=VARCHAR},
+		SRC =#{totalid,jdbcType=VARCHAR}
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	<delete id="delsubnaviByKey" parameterType="java.lang.String">
+		delete from UAT_PROD0109.SYMENU
+		where ID = #{id,jdbcType=VARCHAR}
+	</delete>
+</mapper>

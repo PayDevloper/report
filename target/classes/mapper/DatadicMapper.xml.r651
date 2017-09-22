@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sumao.dao.DatadicMapper">
+	<resultMap id="Datadic" type="com.sumao.model.ComTable">
+		<result column="col1" property="col1" jdbcType="VARCHAR" />
+		<result column="col2" property="col2" jdbcType="VARCHAR" />
+		<result column="col3" property="col3" jdbcType="VARCHAR" />
+		<result column="col4" property="col4" jdbcType="VARCHAR" />
+		<result column="col5" property="col5" jdbcType="VARCHAR" />
+		<result column="col6" property="col6" jdbcType="VARCHAR" />
+		<result column="col7" property="col7" jdbcType="VARCHAR" />
+		<result column="col8" property="col8" jdbcType="VARCHAR" />
+		<result column="col9" property="col9" jdbcType="VARCHAR" />
+		<result column="col10" property="col10" jdbcType="VARCHAR" />
+	</resultMap>
+	<!--获取数据字典信息，执行模糊查询机制-->
+	<select id="showDataDicByPage" resultMap="Datadic" parameterType="java.util.Map">
+		select * from
+		(select rownum rn,t.col1,t.col2,t.col3,t.col4,t.col5 from(
+		select SERIALID as col1,TYPE as col2,CHNAME as col3, ENNAME as col4,id as col5 from ${tableSpace_prod}.PAY_DICTIONARY
+		where 
+		 TYPE=#{col5,jdbcType=VARCHAR}
+		  and (SERIALID like '%${col1}%' or TYPE  like '%${col1}%' or CHNAME  like '%${col1}%' or ENNAME like '%${col1}%' or id like '%${col1}%')
+		)t
+		<![CDATA[
+		where ROWNUM<=#{pageSize,jdbcType=VARCHAR})
+		where rn>#{startPos,jdbcType=VARCHAR}
+		]]>　
+	</select>
+	<!-- 获取数据字典表信息数据条数 -->
+	<select id="DataDicNum" resultMap="Datadic">select count(*) as col1  from(
+		select * from ${tableSpace_prod}.PAY_DICTIONARY where
+		 TYPE=#{col5,jdbcType=VARCHAR}
+		  and (SERIALID like '%${col1}%' or TYPE  like '%${col1}%' or CHNAME  like '%${col1}%' or ENNAME like '%${col1}%' or id like '%${col1}%'))</select>
+	<!-- 通过id获取数据字典表信息 -->
+	<select id="getDicById" resultMap="Datadic">select SERIALID as col1,TYPE as col2,CHNAME as col3, ENNAME as col4,id as col5 from ${tableSpace_prod}.PAY_DICTIONARY
+		where id=#{dicnum,jdbcType=INTEGER}</select>
+	<!-- 添加一条数据字典表信息 -->
+	<insert id="addWord" parameterType="com.sumao.model.ComTable">insert into ${tableSpace_prod}.PAY_DICTIONARY (id, TYPE,CHNAME,SERIALID,
+		ENNAME)
+		values (#{col5,jdbcType=VARCHAR}, #{col1,jdbcType=VARCHAR},
+		#{col2,jdbcType=VARCHAR},
+		#{col3,jdbcType=VARCHAR},#{col4,jdbcType=VARCHAR})</insert>
+	<!-- 更新一条数据字典表信息 -->
+	<update id="updateWord" parameterType="com.sumao.model.ComTable">update ${tableSpace_prod}.PAY_DICTIONARY
+		set TYPE = #{col1,jdbcType=VARCHAR},
+		CHNAME = #{col2,jdbcType=VARCHAR},
+		SERIALID = #{col3,jdbcType=VARCHAR},ENNAME= #{col4,jdbcType=VARCHAR}
+		where id = #{col5,jdbcType=VARCHAR}</update>
+	<!-- 执行删除数据字典表信息 -->
+	<delete id="delWordById" parameterType="java.lang.String" >delete from ${tableSpace_prod}.PAY_DICTIONARY
+		where id = #{dicnum,jdbcType=VARCHAR}</delete>
+</mapper>

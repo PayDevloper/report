@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sumao.dao.RegionMapper">
+	<resultMap id="RegionDetail" type="com.sumao.model.ComTable">
+		<result column="col1" property="col1" jdbcType="VARCHAR" />
+		<result column="col2" property="col2" jdbcType="VARCHAR" />
+		<result column="col3" property="col3" jdbcType="VARCHAR" />
+		<result column="col4" property="col4" jdbcType="VARCHAR" />
+		<result column="col5" property="col5" jdbcType="VARCHAR" />
+	</resultMap>
+	<!-- 查询用户列表 -->
+<select id="getProvince" resultMap="RegionDetail">
+		SELECT address_name as col1 FROM ${tableSpace_prod}.atg_address_v where hierarchy_level='2' 
+	</select>
+	<select id="getCityByProvince" resultMap="RegionDetail" parameterType="java.lang.String" >
+		SELECT address_name as col1 FROM ${tableSpace_prod}.atg_address_v where address_code like '%' ||(SELECT address_code as col1 FROM uat_prod0109.atg_address_v v where v.address_name=#{provincename,jdbcType=VARCHAR}) || '%'
+	and  length(address_code)=6
+	</select>
+</mapper>

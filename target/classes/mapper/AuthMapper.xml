@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sumao.dao.AuthMapper">
+	<resultMap id="Auth" type="com.sumao.model.ClientTop">
+		<result column="Serial" property="serialc" jdbcType="VARCHAR" />
+		<result column="gradeNumber" property="sort" jdbcType="VARCHAR" />
+		<result column="totalQuantity" property="totalQuantityc" jdbcType="VARCHAR" />
+		<result column="totalPrice" property="totalPricec" jdbcType="VARCHAR" />
+		<result column="Average" property="averagec" jdbcType="VARCHAR" />
+	</resultMap>
+	<!--执行sql语句，检查tokenin的有效性，并返回查询结果的个数 -->
+	<select id="checkValidity" resultType="java.lang.Integer" parameterType="java.lang.String">
+		SELECT nvl(count(*),0) as checknum
+        FROM uat_prod0109.oauth_client_token t
+        WHERE t.token=#{tokenin,jdbcType=VARCHAR} and t.generate_time BETWEEN systimestamp - 30 / 1440 AND systimestamp;
+	</select>
+	<select id="recieveUrl" resultMap="Auth" parameterType="java.lang.String">
+		SELECT src FROM uat_prod0109.SYMENU where id=#{code,jdbcType=VARCHAR}
+	</select>
+</mapper>

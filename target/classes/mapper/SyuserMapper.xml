@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sumao.dao.SyuserMapper">
+	<!-- 表和模型映射关系维护 -->
+	<resultMap id="BaseResultMap" type="com.sumao.model.Syuser">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="NAME" property="name" jdbcType="VARCHAR" />
+		<result column="PASSWORD" property="password" jdbcType="VARCHAR" />
+		<result column="CREATEDATETIME" property="createdatetime"
+			jdbcType="DATE" />
+		<result column="MODIFYDATETIME" property="modifydatetime"
+			jdbcType="DATE" />
+	</resultMap>
+
+	<!-- 表的字段属性 -->
+	<sql id="Base_Column_List">
+		ID, NAME, PASSWORD, CREATEDATETIME, MODIFYDATETIME
+	</sql>
+
+	<!-- 查询用户列表 -->
+	<select id="findUsers" resultMap="BaseResultMap" parameterType="com.sumao.model.Syuser">
+		select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.SYUSER where 1=1
+		<if test="id != null">
+			and ID = #{id,jdbcType=VARCHAR}
+		</if>
+		<if test="name != null">
+			and NAME = #{name,jdbcType=VARCHAR}
+		</if>
+		<if test="password != null">
+			and PASSWORD = #{password,jdbcType=VARCHAR}
+		</if>
+	</select>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.SYUSER where ID = #{id,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from uat_prod0109.SYUSER
+		where ID = #{id,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.sumao.model.Syuser">
+		insert into uat_prod0109.SYUSER (ID, NAME,
+		PASSWORD, CREATEDATETIME,
+		MODIFYDATETIME) values (
+		#{id,jdbcType=VARCHAR},
+		#{name,jdbcType=VARCHAR},
+		#{password,jdbcType=VARCHAR},
+		#{createdatetime,jdbcType=DATE},
+		#{modifydatetime,jdbcType=DATE}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.sumao.model.Syuser">
+		insert into uat_prod0109.SYUSER
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				ID,
+			</if>
+			<if test="name != null">
+				NAME,
+			</if>
+			<if test="password != null">
+				PASSWORD,
+			</if>
+			<if test="createdatetime != null">
+				CREATEDATETIME,
+			</if>
+			<if test="modifydatetime != null">
+				MODIFYDATETIME,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				#{password,jdbcType=VARCHAR},
+			</if>
+			<if test="createdatetime != null">
+				#{createdatetime,jdbcType=DATE},
+			</if>
+			<if test="modifydatetime != null">
+				#{modifydatetime,jdbcType=DATE},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.sumao.model.Syuser">
+		update uat_prod0109.SYUSER
+		<set>
+			<if test="name != null">
+				NAME = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				PASSWORD = #{password,jdbcType=VARCHAR},
+			</if>
+			<if test="createdatetime != null">
+				CREATEDATETIME = #{createdatetime,jdbcType=DATE},
+			</if>
+			<if test="modifydatetime != null">
+				MODIFYDATETIME = #{modifydatetime,jdbcType=DATE},
+			</if>
+		</set>
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.sumao.model.Syuser">
+		update uat_prod0109.SYUSER
+		set
+		NAME = #{name,jdbcType=VARCHAR},
+		PASSWORD =
+		#{password,jdbcType=VARCHAR},
+		CREATEDATETIME =
+		#{createdatetime,jdbcType=DATE},
+		MODIFYDATETIME =
+		#{modifydatetime,jdbcType=DATE}
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+</mapper>

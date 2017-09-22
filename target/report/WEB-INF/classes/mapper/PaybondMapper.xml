@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sumao.dao.PaybondMapper">
+	<!-- 表和模型映射关系维护 -->
+	<resultMap id="BaseResultMap" type="com.sumao.model.Paybond">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="seller" property="seller" jdbcType="VARCHAR" />
+		<result column="marketing" property="marketing" jdbcType="VARCHAR" />
+		<result column="marketingid" property="marketingid" jdbcType="VARCHAR" />
+		<result column="subitemcode" property="subitemcode" jdbcType="VARCHAR" />
+		<result column="subitemname" property="subitemname" jdbcType="VARCHAR" />
+		<result column="totalitemname" property="totalitemname" jdbcType="VARCHAR" />
+		<result column="financeacc" property="financeacc" jdbcType="VARCHAR" />
+		<result column="minpayamount" property="minpayamount" jdbcType="VARCHAR" />
+		<result column="havedeposit" property="havedeposit" jdbcType="VARCHAR" />
+		<result column="whetheralerted" property="whetheralerted" jdbcType="VARCHAR" />
+		<result column="warningsum" property="warningsum" jdbcType="VARCHAR" />
+		<result column="approve" property="approve" jdbcType="VARCHAR" />
+		<result column="payment" property="payment" jdbcType="VARCHAR" />
+		<result column="createperson" property="createperson" jdbcType="VARCHAR" />
+		<result column="createtime" property="createtime" jdbcType="VARCHAR" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="codeid" property="codeid" jdbcType="VARCHAR" />
+		<result column="auditperson" property="auditperson" jdbcType="VARCHAR" />
+    	<result column="audittime" property="audittime" jdbcType="VARCHAR" />
+    	<result column="remark1" property="remark1" jdbcType="VARCHAR" />
+    	<result column="remark2" property="remark2" jdbcType="VARCHAR" />
+    	<result column="remark3" property="remark3" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 表的字段属性 -->
+	<sql id="Base_Column_List">
+		ID, seller, marketing, marketingid, subitemcode, subitemname, totalitemname, financeacc,minpayamount,havedeposit,whetheralerted,warningsum,approve,payment,createperson,createtime,remark,codeid,auditperson,audittime,remark1,remark2 
+	</sql>
+
+	<!-- 查询信息列表 -->
+	<select id="findPayrList" resultMap="BaseResultMap" parameterType="com.sumao.model.Paybond">
+		select prd.SELLER as SELLER, prd.MARKETING as MARKETING, prd.MARKETINGID as MARKETINGID, prd.SUBITEMCODE as SUBITEMCODE, 
+		prd.SUBITEMNAME as SUBITEMNAME, prd.TOTALITEMNAME as TOTALITEMNAME, prd.FINANCEACC as FINANCEACC, 
+   		 prd.minpayamount as minpayamount, prd.havedeposit as havedeposit, prd.whetheralerted as whetheralerted, prd.warningsum as warningsum, 
+   		 prd.REMARK as REMARK,(case when pcy.id is null then '未支付' else '已支付' end ) as remark3, 
+   		 prd.approve as approve, prd.payment as payment, prd.createperson as createperson, 
+   		 prd.createtime as createtime, prd.ID as ID, prd.codeid as codeid, 
+   		 prd.auditperson as auditperson, prd.audittime as audittime, prd.remark1 as remark1, prd.remark2 as remark2
+		from uat_prod0109.pay_bond prd left join uat_prod0109.pay_costpay pcy on prd.id=pcy.paymentcode 
+		where prd.seller LIKE '%${seller}%' and prd.MARKETING LIKE '%${marketing}%' 
+		 and prd.MARKETINGID LIKE '%${marketingid}%' and prd.subitemname LIKE '%${subitemname}%' 
+		 and prd.financeacc LIKE '%${financeacc}%' 
+	</select>
+	
+	<select id="findPayrTotal" resultType="java.lang.Integer" parameterType="com.sumao.model.Paybond">
+		select count(ID)
+		from uat_prod0109.pay_bond where seller LIKE '%${seller}%' and MARKETING LIKE '%${marketing}%' 
+		 and MARKETINGID LIKE '%${marketingid}%' and subitemname LIKE '%${subitemname}%' 
+		 and financeacc LIKE '%${financeacc}%'  	
+	</select>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.pay_bond where ID = #{id,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectByMarketingid" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.pay_bond where marketingid = #{marketingid,jdbcType=VARCHAR} and subitemname LIKE '%保证金%'
+	</select>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from uat_prod0109.pay_bond
+		where ID = #{id,jdbcType=VARCHAR}
+	</delete>
+	
+	<update id="editaudit" parameterType="java.lang.String">
+		update uat_prod0109.pay_bond 
+		set approve =#{approve,jdbcType=VARCHAR},auditperson =#{auditperson,jdbcType=VARCHAR},audittime =#{audittime,jdbcType=VARCHAR}  
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	
+	<update id="editBondByID" parameterType="com.sumao.model.Paybond">
+		update uat_prod0109.pay_bond 
+		set payment ='已支付', 
+		havedeposit =To_char(To_number(havedeposit)+${havedeposit}) 
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	
+	<insert id="insert" parameterType="com.sumao.model.Paybond">
+		insert into uat_prod0109.pay_bond (ID, seller, marketing, marketingid, subitemcode, subitemname, 
+		totalitemname, financeacc, minpayamount, havedeposit,whetheralerted,warningsum,approve,payment,createperson,createtime,remark,codeid) values (
+		#{id,jdbcType=VARCHAR},
+		#{seller,jdbcType=VARCHAR},
+		#{marketing,jdbcType=VARCHAR},
+		#{marketingid,jdbcType=VARCHAR},
+		#{subitemcode,jdbcType=VARCHAR},
+		#{subitemname,jdbcType=VARCHAR},
+		#{totalitemname,jdbcType=VARCHAR},
+		#{financeacc,jdbcType=VARCHAR},
+		#{minpayamount,jdbcType=VARCHAR},
+		#{havedeposit,jdbcType=VARCHAR},
+		#{whetheralerted,jdbcType=VARCHAR},
+		#{warningsum,jdbcType=VARCHAR},
+		#{approve,jdbcType=VARCHAR},
+		#{payment,jdbcType=VARCHAR},
+		#{createperson,jdbcType=VARCHAR},
+		#{createtime,jdbcType=VARCHAR},
+		#{remark,jdbcType=VARCHAR},
+		#{codeid,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<update id="updateByPrimaryKey" parameterType="com.sumao.model.Paybond">
+		update uat_prod0109.pay_bond 
+		set 
+		seller = #{seller,jdbcType=VARCHAR},
+		marketing =	#{marketing,jdbcType=VARCHAR},
+		marketingid =#{marketingid,jdbcType=VARCHAR},
+		subitemcode =#{subitemcode,jdbcType=VARCHAR},
+		subitemname =#{subitemname,jdbcType=VARCHAR},
+		totalitemname =#{totalitemname,jdbcType=VARCHAR},
+		financeacc =#{financeacc,jdbcType=VARCHAR},
+		minpayamount =#{minpayamount,jdbcType=VARCHAR},
+		warningsum =#{warningsum,jdbcType=VARCHAR},
+		approve =#{approve,jdbcType=VARCHAR},
+		createperson =#{createperson,jdbcType=VARCHAR},
+		createtime =#{createtime,jdbcType=VARCHAR},
+		remark =#{remark,jdbcType=VARCHAR} 
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	
+	<insert id="editHistory" parameterType="com.sumao.model.Paybond">
+		insert into uat_prod0109.pay_bondhistory (select t.* from uat_prod0109.pay_bond t where t.id=#{id,jdbcType=VARCHAR})
+	</insert>
+	
+	
+	<insert id="insertHistory" parameterType="com.sumao.model.Paybond">
+		insert into uat_prod0109.pay_bondhistory (ID, seller, marketing, marketingid, subitemcode, subitemname, 
+		totalitemname, financeacc, minpayamount, havedeposit,whetheralerted,warningsum,approve,payment,createperson,createtime,remark,codeid,remark1,remark2) values (
+		#{id,jdbcType=VARCHAR},
+		#{seller,jdbcType=VARCHAR},
+		#{marketing,jdbcType=VARCHAR},
+		#{marketingid,jdbcType=VARCHAR},
+		#{subitemcode,jdbcType=VARCHAR},
+		#{subitemname,jdbcType=VARCHAR},
+		#{totalitemname,jdbcType=VARCHAR},
+		#{financeacc,jdbcType=VARCHAR},
+		#{minpayamount,jdbcType=VARCHAR},
+		#{havedeposit,jdbcType=VARCHAR},
+		#{whetheralerted,jdbcType=VARCHAR},
+		#{warningsum,jdbcType=VARCHAR},
+		#{approve,jdbcType=VARCHAR},
+		#{payment,jdbcType=VARCHAR},
+		#{createperson,jdbcType=VARCHAR},
+		#{createtime,jdbcType=VARCHAR},
+		#{remark,jdbcType=VARCHAR},
+		#{codeid,jdbcType=VARCHAR},
+		#{remark1,jdbcType=VARCHAR},
+		#{remark2,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<!-- 查询历史信息列表 -->
+	<select id="findPayrHisList" resultMap="BaseResultMap" parameterType="com.sumao.model.Paybond">
+		select ID, seller, marketing, marketingid, subitemcode, subitemname, totalitemname, financeacc,minpayamount,havedeposit,
+    (case when whetheralerted is null then '<![CDATA[<b class="color_gre">正常</b>]]>' else '<![CDATA[<b class="color_red">预警</b>]]>' end ) as whetheralerted,warningsum,approve,payment,createperson,createtime,remark,codeid,auditperson,audittime,remark1,remark2 
+		from uat_prod0109.pay_bondhistory where seller LIKE '%${seller}%' and MARKETING LIKE '%${marketing}%' 
+		 and MARKETINGID LIKE '%${marketingid}%' and codeid LIKE '%${codeid}%' 
+		 and remark2 LIKE '%${remark2}%' and (createtime<![CDATA[>=]]>#{createtime,jdbcType=VARCHAR} and createtime<![CDATA[<=]]>#{remark,jdbcType=VARCHAR}) order by createtime desc 
+	</select>
+	
+	<select id="findPayrHisTotal" resultType="java.lang.Integer" parameterType="com.sumao.model.Paybond">
+		select count(ID)
+		from uat_prod0109.pay_bondhistory where seller LIKE '%${seller}%' and MARKETING LIKE '%${marketing}%' 
+		 and MARKETINGID LIKE '%${marketingid}%' and codeid LIKE '%${codeid}%' 
+		 and remark2 LIKE '%${remark2}%' and (createtime<![CDATA[>=]]>#{createtime,jdbcType=VARCHAR} and createtime<![CDATA[<=]]>#{remark,jdbcType=VARCHAR}) 	
+	</select>
+	
+	<select id="findBondByMID" resultMap="BaseResultMap" parameterType="com.sumao.model.Paybond">
+		select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.pay_bond where marketingid=#{marketingid,jdbcType=VARCHAR} and approve='已通过' and subitemname like '%保证金%'
+	</select>
+	
+	
+</mapper>

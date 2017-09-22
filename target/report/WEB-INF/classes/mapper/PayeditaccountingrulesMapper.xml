@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sumao.dao.PayeditaccountingrulesMapper">
+	<!-- 表和模型映射关系维护 -->
+	<resultMap id="BaseResultMap" type="com.sumao.model.Payeditaccountingrules">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="seller" property="seller" jdbcType="VARCHAR" />
+		<result column="marketing" property="marketing" jdbcType="VARCHAR" />
+		<result column="marketingid" property="marketingid" jdbcType="VARCHAR" />
+		<result column="tradingpatterns" property="tradingpatterns" jdbcType="VARCHAR" />
+		<result column="chargingdimensionality" property="chargingdimensionality" jdbcType="VARCHAR" />
+		<result column="dimensionparameter" property="dimensionparameter" jdbcType="VARCHAR" />
+		<result column="chargingparty" property="chargingparty" jdbcType="VARCHAR" />
+		<result column="productcategory" property="productcategory" jdbcType="VARCHAR" />
+		<result column="productapplication" property="productapplication" jdbcType="VARCHAR" />
+		<result column="productbrand" property="productbrand" jdbcType="VARCHAR" />
+		<result column="effective" property="effective" jdbcType="VARCHAR" />
+		<result column="priority" property="priority" jdbcType="VARCHAR" />
+		<result column="ladderprice" property="ladderprice" jdbcType="VARCHAR" />
+		<result column="effectivetime" property="effectivetime" jdbcType="VARCHAR" />
+		<result column="invalidtime" property="invalidtime" jdbcType="VARCHAR" />
+		
+		<result column="startthreshold" property="startthreshold" jdbcType="VARCHAR" />
+		<result column="startthresholdunit" property="startthresholdunit" jdbcType="VARCHAR" />
+		<result column="endthreshold" property="endthreshold" jdbcType="VARCHAR" />
+		<result column="endthresholdunit" property="endthresholdunit" jdbcType="VARCHAR" />
+		<result column="stepmode" property="stepmode" jdbcType="VARCHAR" />
+		<result column="stepmodenum" property="stepmodenum" jdbcType="VARCHAR" />
+		<result column="chargingmode" property="chargingmode" jdbcType="VARCHAR" />
+		
+		<result column="approve" property="approve" jdbcType="VARCHAR" />
+		<result column="createperson" property="createperson" jdbcType="VARCHAR" />
+		<result column="createtime" property="createtime" jdbcType="VARCHAR" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="codeid" property="codeid" jdbcType="VARCHAR" />
+		<result column="ordersource" property="ordersource" jdbcType="VARCHAR" />
+		<result column="auditperson" property="auditperson" jdbcType="VARCHAR" />
+    	<result column="audittime" property="audittime" jdbcType="VARCHAR" />
+    	
+    	<result column="startebscategory1" property="startebscategory1" jdbcType="VARCHAR" />
+    	<result column="ebscategory1" property="ebscategory1" jdbcType="VARCHAR" />
+    	<result column="startebscategory2" property="startebscategory2" jdbcType="VARCHAR" />
+    	<result column="ebscategory2" property="ebscategory2" jdbcType="VARCHAR" />
+    	<result column="startebscategory3" property="startebscategory3" jdbcType="VARCHAR" />
+    	<result column="ebscategory3" property="ebscategory3" jdbcType="VARCHAR" />
+    	<result column="startgradenumber" property="startgradenumber" jdbcType="VARCHAR" />
+    	<result column="gradenumber" property="gradenumber" jdbcType="VARCHAR" />
+    	<result column="remark1" property="remark1" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 表的字段属性 -->
+	<sql id="Base_Column_List">
+		ID,seller,marketing,marketingid,tradingpatterns,chargingdimensionality,dimensionparameter,chargingparty,
+		ladderprice,effectivetime,invalidtime,startthreshold,startthresholdunit,endthreshold,endthresholdunit,
+		stepmode,stepmodenum,createperson,createtime,approve,remark,codeid,auditperson,audittime,chargingmode,
+		startebscategory1,ebscategory1,startebscategory2,ebscategory2,startebscategory3,ebscategory3,startgradenumber,gradenumber,remark1
+	</sql>
+
+	<!-- 查询信息列表 -->
+	<select id="findPayrList" resultMap="BaseResultMap" parameterType="com.sumao.model.Payeditaccountingrules">
+		
+		select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.pay_editaccountingrules 
+		<![CDATA[
+		where effectivetime>=#{effectivetime}  
+		 and invalidtime<=#{invalidtime} and tradingpatterns LIKE '%${tradingpatterns}%' 
+		 and approve LIKE '%${approve}%' and chargingmode LIKE '%${chargingmode}%' 
+		 and marketingid LIKE '%${marketingid}%'
+		]]>
+	</select>
+	
+	<select id="findPayrTotal" resultType="java.lang.Integer" parameterType="com.sumao.model.Payeditaccountingrules">
+		
+		select count(ID) from (select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.pay_editaccountingrules 
+		<![CDATA[
+		where effectivetime>=#{effectivetime}  
+		 and invalidtime<=#{invalidtime} and tradingpatterns LIKE '%${tradingpatterns}%' 
+		 and approve LIKE '%${approve}%' and chargingmode LIKE '%${chargingmode}%' 
+		 and marketingid LIKE '%${marketingid}%'
+		 ]]>　
+		 )
+		 
+	</select>
+	
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.pay_editaccountingrules where id = #{id,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from uat_prod0109.pay_editaccountingrules
+		where ID = #{id,jdbcType=VARCHAR}
+	</delete>
+	
+	<update id="editaudit" parameterType="com.sumao.model.Payeditaccountingrules">
+		update uat_prod0109.pay_editaccountingrules 
+		set approve =#{approve,jdbcType=VARCHAR},auditperson =#{auditperson,jdbcType=VARCHAR},audittime =#{audittime,jdbcType=VARCHAR}  
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	<insert id="insert" parameterType="com.sumao.model.Payeditaccountingrules">
+		insert into uat_prod0109.pay_editaccountingrules (ID,seller,marketing,marketingid,tradingpatterns,chargingdimensionality,dimensionparameter,chargingparty,
+		ladderprice,effectivetime,invalidtime,startthreshold,startthresholdunit,endthreshold,endthresholdunit,stepmode,stepmodenum,createperson,createtime,approve,remark,codeid,chargingmode,
+		startebscategory1,ebscategory1,startebscategory2,ebscategory2,startebscategory3,ebscategory3,startgradenumber,gradenumber) values (
+		#{id,jdbcType=VARCHAR},
+		#{seller,jdbcType=VARCHAR},
+		#{marketing,jdbcType=VARCHAR},
+		#{marketingid,jdbcType=VARCHAR},
+		#{tradingpatterns,jdbcType=VARCHAR},
+		#{chargingdimensionality,jdbcType=VARCHAR},
+		#{dimensionparameter,jdbcType=VARCHAR},
+		#{chargingparty,jdbcType=VARCHAR},
+		#{ladderprice,jdbcType=VARCHAR},
+		#{effectivetime,jdbcType=VARCHAR},
+		#{invalidtime,jdbcType=VARCHAR},
+		#{startthreshold,jdbcType=VARCHAR},
+		#{startthresholdunit,jdbcType=VARCHAR},
+		#{endthreshold,jdbcType=VARCHAR},
+		#{endthresholdunit,jdbcType=VARCHAR},
+		#{stepmode,jdbcType=VARCHAR},
+		#{stepmodenum,jdbcType=VARCHAR},
+		#{createperson,jdbcType=VARCHAR},
+		#{createtime,jdbcType=VARCHAR},
+		#{approve,jdbcType=VARCHAR},
+		#{remark,jdbcType=VARCHAR},
+		#{codeid,jdbcType=VARCHAR},
+		#{chargingmode,jdbcType=VARCHAR},
+		#{startebscategory1,jdbcType=VARCHAR},
+		#{ebscategory1,jdbcType=VARCHAR},
+		#{startebscategory2,jdbcType=VARCHAR},
+		#{ebscategory2,jdbcType=VARCHAR},
+		#{startebscategory3,jdbcType=VARCHAR},
+		#{ebscategory3,jdbcType=VARCHAR},
+		#{startgradenumber,jdbcType=VARCHAR},
+		#{gradenumber,jdbcType=VARCHAR}	
+		)
+	</insert>
+
+	<update id="updateByPrimaryKey" parameterType="com.sumao.model.Payeditaccountingrules">
+		update uat_prod0109.pay_editaccountingrules 
+		set 
+		seller = #{seller,jdbcType=VARCHAR},
+		marketing=#{marketing,jdbcType=VARCHAR},
+		marketingid=#{marketingid,jdbcType=VARCHAR},
+		tradingpatterns=#{tradingpatterns,jdbcType=VARCHAR},
+		chargingdimensionality=#{chargingdimensionality,jdbcType=VARCHAR},
+		dimensionparameter=#{dimensionparameter,jdbcType=VARCHAR},
+		chargingparty=#{chargingparty,jdbcType=VARCHAR},
+		ladderprice=#{ladderprice,jdbcType=VARCHAR},
+		effectivetime=#{effectivetime,jdbcType=VARCHAR},
+		invalidtime=#{invalidtime,jdbcType=VARCHAR},
+		startthreshold=#{startthreshold,jdbcType=VARCHAR},
+		startthresholdunit=#{startthresholdunit,jdbcType=VARCHAR},
+		endthreshold=#{endthreshold,jdbcType=VARCHAR},
+		endthresholdunit=#{endthresholdunit,jdbcType=VARCHAR},
+		stepmode=#{stepmode,jdbcType=VARCHAR},
+		stepmodenum=#{stepmodenum,jdbcType=VARCHAR},
+		chargingmode=#{chargingmode,jdbcType=VARCHAR},
+		createperson=#{createperson,jdbcType=VARCHAR},
+		createtime=#{createtime,jdbcType=VARCHAR},
+		approve=#{approve,jdbcType=VARCHAR},
+		remark =#{remark,jdbcType=VARCHAR},
+		codeid =#{codeid,jdbcType=VARCHAR},
+		ordersource =#{ordersource,jdbcType=VARCHAR},
+		startebscategory1=#{startebscategory1,jdbcType=VARCHAR},
+		ebscategory1=#{ebscategory1,jdbcType=VARCHAR},
+		startebscategory2=#{startebscategory2,jdbcType=VARCHAR},
+		ebscategory2=#{ebscategory2,jdbcType=VARCHAR},
+		startebscategory3=#{startebscategory3,jdbcType=VARCHAR},
+		ebscategory3=#{ebscategory3,jdbcType=VARCHAR},
+		startgradenumber=#{startgradenumber,jdbcType=VARCHAR},
+		gradenumber=#{gradenumber,jdbcType=VARCHAR} 
+		where ID = #{id,jdbcType=VARCHAR}
+		
+	</update>
+	
+	
+	<insert id="editHistory" parameterType="com.sumao.model.Payeditaccountingrules">
+		insert into uat_prod0109.pay_editaccount_history (select t.* from uat_prod0109.pay_editaccountingrules t where t.id=#{id,jdbcType=VARCHAR})
+	</insert>
+	
+	
+	<!-- 查询符合条件的规则，用于买方结算接口，后四段为判断牌号 -->
+	<select id="findrule" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+		select 
+		<include refid="Base_Column_List" /> 
+		from uat_prod0109.pay_editaccountingrules where marketingid=(select 
+		other.saler_id from uat_PROD0109.SUMAO_ORDER_OTHER other where order_id=#{buyerordernum})
+		and tradingpatterns=(select chname from uat_prod0109.pay_dictionary where serialid=(select 
+		desor.type from uat_PROD0109.dcspp_order desor where order_id=#{buyerordernum}) and 
+		type='jyms') and approve='已通过' and (chargingparty='买方' or chargingparty='买卖双方') and 
+		effectivetime<![CDATA[<=]]>#{buytime} and invalidtime<![CDATA[>=]]>#{buytime} 
+		and (
+    	(startgradenumber='1' and gradenumber=(select distinct product_name from 
+    	uat_prod0109.sumao_mst_sku_info inf inner join uat_prod0109.sumao_mst_sku_apply_info appl on 
+    	inf.ebs_id = appl.ebs_sku_id where grade_number=(select item.grade_number from uat_prod0109.dcspp_item item
+    	inner join uat_prod0109.dcspp_order_item oitem on oitem.commerce_items = item.commerce_item_id
+    	where oitem.order_id =#{buyerordernum}) and apply_org_id=(select other.saler_id from uat_PROD0109.SUMAO_ORDER_OTHER other 
+    	where order_id=#{buyerordernum}))) or 
+    	(startgradenumber!='1' and startebscategory3='1' and ebscategory3=(select distinct category3 from 
+    	uat_prod0109.sumao_mst_sku_info inf inner join uat_prod0109.sumao_mst_sku_apply_info appl on 
+    	inf.ebs_id = appl.ebs_sku_id where grade_number=(select item.grade_number from uat_prod0109.dcspp_item item
+    	inner join uat_prod0109.dcspp_order_item oitem on oitem.commerce_items = item.commerce_item_id
+    	where oitem.order_id =#{buyerordernum}) and apply_org_id=(select other.saler_id from uat_PROD0109.SUMAO_ORDER_OTHER other 
+    	where order_id=#{buyerordernum}))) or
+    	(startebscategory3!='1' and startebscategory2='1' and ebscategory2=(select distinct category2 from 
+    	uat_prod0109.sumao_mst_sku_info inf inner join uat_prod0109.sumao_mst_sku_apply_info appl on 
+    	inf.ebs_id = appl.ebs_sku_id where grade_number=(select item.grade_number from uat_prod0109.dcspp_item item
+    	inner join uat_prod0109.dcspp_order_item oitem on oitem.commerce_items = item.commerce_item_id
+    	where oitem.order_id =#{buyerordernum}) and apply_org_id=(select other.saler_id from uat_PROD0109.SUMAO_ORDER_OTHER other 
+    	where order_id=#{buyerordernum}))) or
+    	(startebscategory2!='1' and startebscategory1='1' and ebscategory1=(select distinct category1 from 
+    	uat_prod0109.sumao_mst_sku_info inf inner join uat_prod0109.sumao_mst_sku_apply_info appl on 
+    	inf.ebs_id = appl.ebs_sku_id where grade_number=(select item.grade_number from uat_prod0109.dcspp_item item
+    	inner join uat_prod0109.dcspp_order_item oitem on oitem.commerce_items = item.commerce_item_id
+    	where oitem.order_id =#{buyerordernum}) and apply_org_id=(select other.saler_id from uat_PROD0109.SUMAO_ORDER_OTHER other 
+    	where order_id=#{buyerordernum}))) or
+    	(startebscategory1!='1')
+    	)
+	</select>
+	
+	<!-- 查询卖方符合条件的计费规则，用于自动运行的订单保证金结算 ，后四段为判断牌号-->
+	<select id="findsellerrule" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+		select 
+		<include refid="Base_Column_List" /> 
+		from uat_prod0109.pay_editaccountingrules where marketingid=#{marketingid} 
+	and tradingpatterns=#{tradingpatterns} and approve='已通过' and (chargingparty='卖方' or chargingparty='买卖双方') and 
+		effectivetime<![CDATA[<=]]>#{buytime} and invalidtime<![CDATA[>=]]>#{buytime} 
+		and (
+    	(startgradenumber='1' and gradenumber=(select distinct product_name from 
+    	uat_prod0109.sumao_mst_sku_info inf inner join uat_prod0109.sumao_mst_sku_apply_info appl on 
+    	inf.ebs_id = appl.ebs_sku_id where grade_number=(select item.grade_number from uat_prod0109.dcspp_item item
+    	inner join uat_prod0109.dcspp_order_item oitem on oitem.commerce_items = item.commerce_item_id
+    	where oitem.order_id =#{buyerordernum}) and apply_org_id=(select other.saler_id from uat_PROD0109.SUMAO_ORDER_OTHER other 
+    	where order_id=#{buyerordernum}))) or 
+    	(startgradenumber!='1' and startebscategory3='1' and ebscategory3=(select distinct category3 from 
+    	uat_prod0109.sumao_mst_sku_info inf inner join uat_prod0109.sumao_mst_sku_apply_info appl on 
+    	inf.ebs_id = appl.ebs_sku_id where grade_number=(select item.grade_number from uat_prod0109.dcspp_item item
+    	inner join uat_prod0109.dcspp_order_item oitem on oitem.commerce_items = item.commerce_item_id
+    	where oitem.order_id =#{buyerordernum}) and apply_org_id=(select other.saler_id from uat_PROD0109.SUMAO_ORDER_OTHER other 
+    	where order_id=#{buyerordernum}))) or
+    	(startebscategory3!='1' and startebscategory2='1' and ebscategory2=(select distinct category2 from 
+    	uat_prod0109.sumao_mst_sku_info inf inner join uat_prod0109.sumao_mst_sku_apply_info appl on 
+    	inf.ebs_id = appl.ebs_sku_id where grade_number=(select item.grade_number from uat_prod0109.dcspp_item item
+    	inner join uat_prod0109.dcspp_order_item oitem on oitem.commerce_items = item.commerce_item_id
+    	where oitem.order_id =#{buyerordernum}) and apply_org_id=(select other.saler_id from uat_PROD0109.SUMAO_ORDER_OTHER other 
+    	where order_id=#{buyerordernum}))) or
+    	(startebscategory2!='1' and startebscategory1='1' and ebscategory1=(select distinct category1 from 
+    	uat_prod0109.sumao_mst_sku_info inf inner join uat_prod0109.sumao_mst_sku_apply_info appl on 
+    	inf.ebs_id = appl.ebs_sku_id where grade_number=(select item.grade_number from uat_prod0109.dcspp_item item
+    	inner join uat_prod0109.dcspp_order_item oitem on oitem.commerce_items = item.commerce_item_id
+    	where oitem.order_id =#{buyerordernum}) and apply_org_id=(select other.saler_id from uat_PROD0109.SUMAO_ORDER_OTHER other 
+    	where order_id=#{buyerordernum}))) or
+    	(startebscategory1!='1')
+    	)
+	</select>
+	
+	
+	<!-- 查询卖方符合条件的退费规则，用于自动运行的保证金返还 -->
+	<select id="findRefundrule" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+		select 
+		<include refid="Base_Column_List" /> 
+		from uat_prod0109.pay_editaccountingrules where approve='已通过' and (chargingparty='卖方' or chargingparty='买卖双方') and 
+		chargingmode='线性收费阶梯退费' and invalidtime like '%${buytime}%' 
+
+	</select>
+	
+	<!-- 根据销售组织以及配置，验证是否时间交叉 -->
+	<select id="getprovingtime" resultType="java.lang.Integer" parameterType="com.sumao.model.Payeditaccountingrules">
+		select count(ID) from uat_prod0109.pay_editaccountingrules
+		where marketingid = #{marketingid,jdbcType=VARCHAR} and chargingparty = #{chargingparty,jdbcType=VARCHAR} and 
+		tradingpatterns = #{tradingpatterns,jdbcType=VARCHAR} and chargingmode = #{chargingmode,jdbcType=VARCHAR} and 
+		ID!=#{id,jdbcType=VARCHAR} and (effectivetime!=#{effectivetime,jdbcType=VARCHAR} or invalidtime!=#{invalidtime,jdbcType=VARCHAR}) and 
+		((effectivetime<![CDATA[>=]]>#{effectivetime,jdbcType=VARCHAR} and effectivetime<![CDATA[<=]]>#{invalidtime,jdbcType=VARCHAR}) or 
+		(invalidtime<![CDATA[>=]]>#{effectivetime,jdbcType=VARCHAR} and invalidtime<![CDATA[<=]]>#{invalidtime,jdbcType=VARCHAR}) or 
+		(effectivetime<![CDATA[>=]]>#{effectivetime,jdbcType=VARCHAR} and invalidtime<![CDATA[<=]]>#{invalidtime,jdbcType=VARCHAR}) or 
+		(invalidtime<![CDATA[>=]]>#{invalidtime,jdbcType=VARCHAR} and effectivetime<![CDATA[<=]]>#{effectivetime,jdbcType=VARCHAR}))
+	</select>
+	
+	<!-- 根据销售组织以及配置，验证是否阈值交叉 -->
+	<select id="getprovingshold" resultType="java.lang.Integer" parameterType="com.sumao.model.Payeditaccountingrules">
+		select count(ID) from uat_prod0109.pay_editaccountingrules
+		where marketingid = #{marketingid,jdbcType=VARCHAR} and chargingparty = #{chargingparty,jdbcType=VARCHAR} and 
+		effectivetime = #{effectivetime,jdbcType=VARCHAR} and invalidtime = #{invalidtime,jdbcType=VARCHAR} and
+		tradingpatterns = #{tradingpatterns,jdbcType=VARCHAR} and chargingmode = #{chargingmode,jdbcType=VARCHAR} and 
+		ID!=#{id,jdbcType=VARCHAR} and ((endthreshold!='#' and 
+		((To_number(startthreshold)<![CDATA[>=]]>#{startthreshold} and To_number(startthreshold)<![CDATA[<=]]>#{endthreshold}) or 
+		(To_number(endthreshold)<![CDATA[>=]]>#{startthreshold} and To_number(endthreshold)<![CDATA[<=]]>#{endthreshold}) or 
+		(To_number(startthreshold)<![CDATA[>=]]>#{startthreshold} and To_number(endthreshold)<![CDATA[<=]]>#{endthreshold}) or 
+		(To_number(endthreshold)<![CDATA[>=]]>#{endthreshold} and To_number(startthreshold)<![CDATA[<=]]>#{startthreshold}))) or 
+		(endthreshold='#' and 
+		((To_number(startthreshold)<![CDATA[>=]]>#{startthreshold} and To_number(startthreshold)<![CDATA[<=]]>#{endthreshold}) or To_number(startthreshold)<![CDATA[<=]]>#{startthreshold})))
+	</select>
+
+<!-- 查询计费规则管理查询信息列表 -->
+	<select id="findPayseachList" resultMap="BaseResultMap" parameterType="com.sumao.model.Payeditaccountingrules">
+		
+		select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.pay_editaccountingrules 
+		<![CDATA[
+		where effectivetime>=#{effectivetime}  
+		 and invalidtime<=#{invalidtime} and tradingpatterns LIKE '%${tradingpatterns}%' 
+		 and chargingmode LIKE '%${chargingmode}%' 
+		 and marketingid LIKE '%${marketingid}%' and seller LIKE '%${seller}%' and marketing LIKE '%${marketing}%'
+		]]>
+	</select>
+	
+	<select id="findPayseachTotal" resultType="java.lang.Integer" parameterType="com.sumao.model.Payeditaccountingrules">
+		
+		select count(ID) from (select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.pay_editaccountingrules 
+		<![CDATA[
+		where effectivetime>=#{effectivetime}  
+		 and invalidtime<=#{invalidtime} and tradingpatterns LIKE '%${tradingpatterns}%' 
+		 and chargingmode LIKE '%${chargingmode}%' 
+		 and marketingid LIKE '%${marketingid}%' and seller LIKE '%${seller}%' and marketing LIKE '%${marketing}%'
+		 ]]>　
+		 )
+		 
+	</select>
+	
+	<select id="findPayselbrandList" resultMap="BaseResultMap" parameterType="com.sumao.model.Payeditaccountingrules">
+		
+		select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.pay_editaccountingrules 
+		<![CDATA[
+		where seller LIKE '%${seller}%' and MARKETING LIKE '%${marketing}%' and MARKETINGID LIKE '%${marketingid}%' 
+		]]>
+	</select>
+	
+	<select id="findPaybrandTotal" resultType="java.lang.Integer" parameterType="com.sumao.model.Payeditaccountingrules">
+		
+		select count(ID) from (select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.pay_editaccountingrules 
+		<![CDATA[
+		where seller LIKE '%${seller}%' and MARKETING LIKE '%${marketing}%' and MARKETINGID LIKE '%${marketingid}%' 
+		 ]]>　
+		 )
+	 
+	</select>
+	
+	<!-- 返回页面的json,返回值是牌号大类信息-->
+	<select id="findoneebs" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+		select distinct category1 as ebscategory1,cate.category_name as remark1 from uat_prod0109.sumao_mst_sku_info inf inner join 
+		uat_prod0109.sumao_mst_sku_apply_info appl on inf.ebs_id = appl.ebs_sku_id  inner join uat_prod0109.sumao_mst_category cate 
+		on inf.category1 = cate.display_category_id where appl.apply_org_id=#{marketingid,jdbcType=VARCHAR} 
+		and appl.apply_state='3' and cate.cate_level='1' and cate.is_delete='0'	
+	</select>
+	
+	<!-- 返回页面的json,返回值是牌号中类信息-->
+	<select id="findtwoebs" resultMap="BaseResultMap" parameterType="java.util.HashMap">		
+		select distinct category2 as ebscategory2,cate.category_name as remark1 from uat_prod0109.sumao_mst_sku_info inf inner join 
+		uat_prod0109.sumao_mst_sku_apply_info appl on inf.ebs_id = appl.ebs_sku_id  inner join uat_prod0109.sumao_mst_category cate 
+		on inf.category2 = cate.display_category_id where appl.apply_org_id=#{marketingid,jdbcType=VARCHAR} 
+		and appl.apply_state='3' and category1 = #{ebsname,jdbcType=VARCHAR} and cate.cate_level='2' and cate.is_delete='0'			
+	</select>
+	
+	<!-- 返回页面的json,返回值是牌号中类信息-->
+	<select id="findthreeebs" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+		select distinct category3 as ebscategory3,cate.category_name as remark1 from uat_prod0109.sumao_mst_sku_info inf inner join 
+		uat_prod0109.sumao_mst_sku_apply_info appl on inf.ebs_id = appl.ebs_sku_id  inner join uat_prod0109.sumao_mst_category cate 
+		on inf.category3 = cate.display_category_id where appl.apply_org_id=#{marketingid,jdbcType=VARCHAR} 
+		and appl.apply_state='3' and category2 = #{ebsname,jdbcType=VARCHAR} and cate.cate_level='3' and cate.is_delete='0'	 	
+	</select>
+	
+	<!-- 返回页面的json,返回值是牌号中类信息-->
+	<select id="findgradeebs" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+		select distinct product_name as gradenumber from uat_prod0109.sumao_mst_sku_info inf inner join 
+		uat_prod0109.sumao_mst_sku_apply_info appl on inf.ebs_id = appl.ebs_sku_id 
+		where appl.apply_org_id=#{marketingid,jdbcType=VARCHAR} and appl.apply_state='3' and category3 = #{ebsname,jdbcType=VARCHAR}		
+	</select>
+
+</mapper>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sumao.dao.DatabookMapper">
+	<!-- 表和模型映射关系维护 -->
+	<resultMap id="BasebookMap" type="com.sumao.model.Paysub">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="SERIALID" property="subname" jdbcType="VARCHAR" />
+		<result column="TYPE" property="remark" jdbcType="VARCHAR" />
+        <result column="CHNAME" property="totalid" jdbcType="VARCHAR" />
+		<result column="ENNAME" property="totalname" jdbcType="VARCHAR" />
+		<result column="SYSCODE" property="codeid" jdbcType="VARCHAR" />	
+		<result column="READYWORD1" property="remark1" jdbcType="VARCHAR" />
+		<result column="operuser" property="operuser" jdbcType="VARCHAR" />
+		<result column="CREATETIME" property="operdate" jdbcType="VARCHAR" />
+		<result column="MODIFIEDTIME" property="financeacc" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 表的字段属性 -->
+	<sql id="Book_Column_List">
+		ID, SERIALID, TYPE,CHNAME,ENNAME,READYWORD1,READYWORD2,READYWORD3,SYSCODE,operuser,CREATETIME,MODIFIEDTIME
+	</sql>
+
+	<!-- 查询信息列表 -->
+	<select id="finddicList" resultMap="BasebookMap" parameterType="com.sumao.model.Paysub">
+		select
+		<include refid="Book_Column_List" />
+		from ${tableSpace_prod}.PAY_DICTIONARY 	where TYPE LIKE '%${remark}%' and CHNAME LIKE '%${totalid}%' and TYPE= #{subname,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="findposTotal" resultType="java.lang.Integer" parameterType="com.sumao.model.Paysub">
+		select count(id) 
+		from (select
+		<include refid="Book_Column_List" />
+		from ${tableSpace_prod}.PAY_DICTIONARY where TYPE LIKE '%${remark}%' and CHNAME LIKE '%${totalid}%' and TYPE= #{subname,jdbcType=VARCHAR}) 
+	</select>
+	<insert id="insert" parameterType="com.sumao.model.Paysub">
+		insert into ${tableSpace_prod}.PAY_DICTIONARY (ID, SERIALID, TYPE, CHNAME, ENNAME, SYSCODE,READYWORD1, operuser,CREATETIME) values (
+		#{id,jdbcType=VARCHAR},
+		#{subname,jdbcType=VARCHAR},
+		#{remark,jdbcType=VARCHAR},
+		#{totalid,jdbcType=VARCHAR},
+		#{totalname,jdbcType=VARCHAR},
+		#{codeid,jdbcType=VARCHAR},
+		#{remark1,jdbcType=VARCHAR},
+		#{operuser,jdbcType=VARCHAR},
+		#{operdate,jdbcType=VARCHAR}
+		)
+	</insert>
+	<update id="updateByPrimaryKey" parameterType="com.sumao.model.Paysub">
+		update ${tableSpace_prod}.PAY_DICTIONARY 
+		set 
+		SERIALID =	#{subname,jdbcType=VARCHAR},
+		CHNAME =#{totalid,jdbcType=VARCHAR},
+		ENNAME =#{totalname,jdbcType=VARCHAR},		
+		SYSCODE =#{operdate,jdbcType=VARCHAR},
+		READYWORD1 = #{remark1,jdbcType=VARCHAR},
+		operuser =	#{operuser,jdbcType=VARCHAR},
+		MODIFIEDTIME =#{operdate,jdbcType=VARCHAR}
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from ${tableSpace_prod}.PAY_DICTIONARY
+		where ID = #{id,jdbcType=VARCHAR}
+	</delete>
+</mapper>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sumao.dao.PaytotalMapper">
+	<!-- 表和模型映射关系维护 -->
+	<resultMap id="BaseResultMap" type="com.sumao.model.Paytotal">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="totalname" property="totalname" jdbcType="VARCHAR" />
+		<result column="totaltype" property="totaltype" jdbcType="VARCHAR" />
+		<result column="operuser" property="operuser" jdbcType="VARCHAR" />
+		<result column="operdate" property="operdate" jdbcType="VARCHAR" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="codeid" property="codeid" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 表的字段属性 -->
+	<sql id="Base_Column_List">
+		ID, totalname, totaltype,operuser,operdate,remark,codeid
+	</sql>
+
+	<!-- 查询信息列表 -->
+	<select id="findPayrList" resultMap="BaseResultMap" parameterType="com.sumao.model.Paytotal">
+		select
+		<include refid="Base_Column_List" />
+		from (select (case when c.id is null then 'bno' else 'byes' end ) as codeid,a.ID, a.totalname, 
+a.totaltype,a.operuser,a.operdate,a.remark from uat_prod0109.pay_totalitems a 
+left join (select distinct z.id,z.totalname from uat_prod0109.pay_totalitems z 
+left join (select * from uat_prod0109.pay_subitems) t on z.id=t.totalid 
+left join (select * from uat_prod0109.pay_bond where approve='已通过') b on t.id=b.subitemcode 
+left join (select * from uat_prod0109.pay_rightgold where approve='已通过') r on t.id=r.subitemcode 
+where b.id is not null or r.id is not null) c on a.id=c.id ) where totalname LIKE '%${totalname}%' and totaltype LIKE '%${totaltype}%' and remark LIKE '%${remark}%'  order by operdate desc		
+	</select>
+	
+	<select id="findTotal" resultType="java.lang.Integer" parameterType="com.sumao.model.Paytotal">
+		select count(id) 
+		from (select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.pay_totalitems where totalname LIKE '%${totalname}%' and totaltype LIKE '%${totaltype}%' and remark LIKE '%${remark}%') 
+	</select>
+	
+	<select id="findSelTotal" resultType="java.lang.Integer" parameterType="com.sumao.model.Paytotal">
+		select count(id) 
+		from (select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.pay_totalitems where totalname LIKE '%${totalname}%' and totaltype LIKE '%${totaltype}%') 
+	</select>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.pay_totalitems where ID = #{id,jdbcType=VARCHAR}
+	</select>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from uat_prod0109.pay_totalitems
+		where ID = #{id,jdbcType=VARCHAR}
+	</delete>
+	
+	<delete id="delSubByPrimaryKey" parameterType="java.lang.String">
+		delete from uat_prod0109.pay_subitems
+		where totalid = #{id,jdbcType=VARCHAR}
+	</delete>
+	
+	<delete id="delRightByPrimaryKey" parameterType="java.lang.String">
+	delete uat_prod0109.pay_rightgold t where t.subitemcode in 
+(select id from uat_prod0109.pay_subitems s where s.totalid=#{id,jdbcType=VARCHAR})
+	</delete>
+	
+	<delete id="deBondByPrimaryKey" parameterType="java.lang.String">
+		delete uat_prod0109.pay_bond t where t.subitemcode in 
+(select id from uat_prod0109.pay_subitems s where s.totalid=#{id,jdbcType=VARCHAR})
+	</delete>
+	
+	<update id="editaudit" parameterType="java.lang.String">
+		update uat_prod0109.pay_totalitems 
+		set audit_status ='已通过' 
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	
+	<insert id="insert" parameterType="com.sumao.model.Paytotal">
+		insert into uat_prod0109.pay_totalitems (ID, totalname, totaltype, operuser, operdate, remark,codeid) values (
+		#{id,jdbcType=VARCHAR},
+		#{totalname,jdbcType=VARCHAR},
+		#{totaltype,jdbcType=VARCHAR},
+		#{operuser,jdbcType=VARCHAR},
+		#{operdate,jdbcType=VARCHAR},
+		#{remark,jdbcType=VARCHAR},
+		#{codeid,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<update id="updateByPrimaryKey" parameterType="com.sumao.model.Paytotal">
+		update uat_prod0109.pay_totalitems 
+		set 
+		totalname = #{totalname,jdbcType=VARCHAR},
+		totaltype =	#{totaltype,jdbcType=VARCHAR},
+		operuser =	#{operuser,jdbcType=VARCHAR},
+		operdate =#{operdate,jdbcType=VARCHAR},
+		remark =#{remark,jdbcType=VARCHAR} 
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+</mapper>

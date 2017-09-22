@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sumao.dao.PaynewaccountingrulesMapper">
+	<!-- 表和模型映射关系维护 -->
+	<resultMap id="BaseResultMap" type="com.sumao.model.Paynewaccountingrules">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="seller" property="seller" jdbcType="VARCHAR" />
+		<result column="marketing" property="marketing" jdbcType="VARCHAR" />
+		<result column="marketingid" property="marketingid" jdbcType="VARCHAR" />
+		<result column="exchangemodel" property="exchangemodel" jdbcType="VARCHAR" />
+		<result column="measuredimension" property="measuredimension" jdbcType="VARCHAR" />
+		<result column="productcategory" property="productcategory" jdbcType="VARCHAR" />
+		<result column="productapplication" property="productapplication" jdbcType="VARCHAR" />
+		<result column="productbrand" property="productbrand" jdbcType="VARCHAR" />
+		<result column="collectionobject" property="collectionobject" jdbcType="VARCHAR" />
+		<result column="ordersourceobject" property="ordersourceobject" jdbcType="VARCHAR" />
+		<result column="createperson" property="createperson" jdbcType="VARCHAR" />
+		<result column="createtime" property="createtime" jdbcType="VARCHAR" />
+		<result column="approve" property="approve" jdbcType="VARCHAR" />
+		<result column="billingconfiguration" property="billingconfiguration" jdbcType="VARCHAR" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="codeid" property="codeid" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 表的字段属性 -->
+	<sql id="Base_Column_List">
+		ID, seller, marketing, marketingid, exchangemodel, measuredimension, productcategory, productapplication,productbrand,collectionobject,ordersourceobject,createperson,createtime,approve,billingconfiguration,remark,codeid
+	</sql>
+
+	<!-- 查询信息列表 -->
+	<select id="findPayrList" resultMap="BaseResultMap" parameterType="com.sumao.model.Paynewaccountingrules">
+		select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.pay_newaccountingrules where seller LIKE '%${seller}%' and marketing LIKE '%${marketing}%' 
+		 and marketingid LIKE '%${marketingid}%' 
+		
+	</select>
+	
+	<select id="findPayrTotal" resultType="java.lang.Integer" parameterType="com.sumao.model.Paynewaccountingrules">
+		select count(ID)
+		from (select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.pay_newaccountingrules where seller LIKE '%${seller}%' and marketing LIKE '%${marketing}%' 
+		 and marketingid LIKE '%${marketingid}%')  	
+	</select>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.pay_newaccountingrules where marketingid = #{marketingid,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from uat_prod0109.pay_newaccountingrules
+		where ID = #{id,jdbcType=VARCHAR}
+	</delete>
+	
+	<update id="editaudit" parameterType="com.sumao.model.Paynewaccountingrules">
+		update uat_prod0109.pay_newaccountingrules 
+		set approve =#{approve,jdbcType=VARCHAR},auditperson =#{auditperson,jdbcType=VARCHAR},audittime =#{audittime,jdbcType=VARCHAR} 
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	
+	<update id="editNewAccountByID" parameterType="com.sumao.model.Paynewaccountingrules">
+		update uat_prod0109.pay_newaccountingrules 
+		set billingconfiguration ='已创建' 
+		where marketingid = #{marketingid,jdbcType=VARCHAR}
+	</update>
+	
+	<insert id="insert" parameterType="com.sumao.model.Paynewaccountingrules">
+		insert into uat_prod0109.pay_newaccountingrules (ID, seller, marketing, marketingid, exchangemodel, measuredimension, 
+		productcategory, productapplication, productbrand, collectionobject,ordersourceobject,createperson,createtime,approve,billingconfiguration, remark,codeid) values (
+		#{id,jdbcType=VARCHAR},
+		#{seller,jdbcType=VARCHAR},
+		#{marketing,jdbcType=VARCHAR},
+		#{marketingid,jdbcType=VARCHAR},
+		#{exchangemodel,jdbcType=VARCHAR},
+		#{measuredimension,jdbcType=VARCHAR},
+		#{productcategory,jdbcType=VARCHAR},
+		#{productapplication,jdbcType=VARCHAR},
+		#{productbrand,jdbcType=VARCHAR},
+		#{collectionobject,jdbcType=VARCHAR},
+		#{ordersourceobject,jdbcType=VARCHAR},
+		#{createperson,jdbcType=VARCHAR},
+		#{createtime,jdbcType=VARCHAR},
+		#{approve,jdbcType=VARCHAR},
+		#{billingconfiguration,jdbcType=VARCHAR},
+		#{remark,jdbcType=VARCHAR},
+		#{codeid,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<update id="updateByPrimaryKey" parameterType="com.sumao.model.Paynewaccountingrules">
+		update uat_prod0109.pay_newaccountingrules 
+		set 
+		seller = #{seller,jdbcType=VARCHAR},
+		marketing =	#{marketing,jdbcType=VARCHAR},
+		marketingid =#{marketingid,jdbcType=VARCHAR},
+		exchangemodel =#{exchangemodel,jdbcType=VARCHAR},
+		measuredimension =#{measuredimension,jdbcType=VARCHAR},
+		productcategory =#{productcategory,jdbcType=VARCHAR},
+		productapplication =#{productapplication,jdbcType=VARCHAR},
+		productbrand =#{productbrand,jdbcType=VARCHAR},
+		collectionobject =#{collectionobject,jdbcType=VARCHAR},
+		ordersourceobject =#{ordersourceobject,jdbcType=VARCHAR},
+		createperson =#{createperson,jdbcType=VARCHAR},
+		createtime =#{createtime,jdbcType=VARCHAR},
+		approve =#{approve,jdbcType=VARCHAR},
+		billingconfiguration =#{billingconfiguration,jdbcType=VARCHAR},
+		remark =#{remark,jdbcType=VARCHAR} 
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+</mapper>

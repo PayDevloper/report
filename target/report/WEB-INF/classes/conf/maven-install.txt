@@ -1,0 +1,1 @@
+mvn install:install-file -Dfile=ftpserver-core-1.0.6.jar -DgroupId=org.apache -DartifactId=ftpserver-core -Dversion=1.0.6 -Dpackaging=jar

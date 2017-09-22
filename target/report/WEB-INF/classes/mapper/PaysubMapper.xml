@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sumao.dao.PaysubMapper">
+	<!-- 表和模型映射关系维护 -->
+	<resultMap id="BaseResultMap" type="com.sumao.model.Paysub">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="totalname" property="totalname" jdbcType="VARCHAR" />
+		<result column="subname" property="subname" jdbcType="VARCHAR" />
+		<result column="totalid" property="totalid" jdbcType="VARCHAR" />
+		<result column="financeacc" property="financeacc" jdbcType="VARCHAR" />
+		<result column="operuser" property="operuser" jdbcType="VARCHAR" />
+		<result column="operdate" property="operdate" jdbcType="VARCHAR" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="codeid" property="codeid" jdbcType="VARCHAR" />
+		<result column="remark1" property="remark1" jdbcType="VARCHAR" />
+		<result column="remark2" property="remark2" jdbcType="VARCHAR" />
+		<result column="remark3" property="remark3" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap id="UserResultMap" type="com.sumao.model.Pay_userorg">
+		<result column="SELLER" property="seller" jdbcType="VARCHAR" />
+    	<result column="MARKETING" property="marketing" jdbcType="VARCHAR" />
+   		<result column="MARKETINGID" property="marketingid" jdbcType="VARCHAR" />
+		<result column="rightgoldstat" property="rightgoldstat" jdbcType="VARCHAR" />
+		<result column="bondstat" property="bondstat" jdbcType="VARCHAR" />
+		
+	</resultMap>
+
+	<!-- 表的字段属性 -->
+	<sql id="Base_Column_List">
+		ID, subname, totalname, totalid, financeacc,operuser,operdate,remark,codeid,remark1,remark2,remark3
+	</sql>
+
+	<!-- 查询信息列表 -->
+	<select id="findPayrList" resultMap="BaseResultMap" parameterType="com.sumao.model.Paysub">
+		select distinct (case when b.id is null then 'bno' else 'byes' end ) as remark2, 
+  (case when r.id is null then 'rno' else 'ryes' end ) as remark3, t.* from 
+  (select pss.ID, pss.subname, pss.totalname, pss.totalid, pdy.chname as financeacc,pss.operuser,pss.operdate,
+		pss.remark,pss.codeid,pss.remark1 from uat_prod0109.pay_subitems pss left join uat_prod0109.pay_dictionary pdy on 
+		pss.financeacc=pdy.serialid where subname LIKE '%${subname}%' and totalname LIKE '%${totalname}%' 
+		and financeacc LIKE '%${financeacc}%' and remark1 LIKE '%${remark1}%' ) t 
+left join (select * from uat_prod0109.pay_bond where approve='已通过') b on t.id=b.subitemcode 
+left join (select * from uat_prod0109.pay_rightgold where approve='已通过') r on t.id=r.subitemcode 		
+	</select>
+	
+	<select id="findTotal" resultType="java.lang.Integer" parameterType="com.sumao.model.Paysub">
+		select count(id) 
+		from (select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.pay_subitems where subname LIKE '%${subname}%' and totalname LIKE '%${totalname}%' 
+		 and financeacc LIKE '%${financeacc}%' and remark1 LIKE '%${remark1}%') 
+	</select>
+	
+	<!-- 查询信息列表 -->
+	<select id="findPayselList" resultMap="BaseResultMap" parameterType="com.sumao.model.Paysub">
+		select sub.id,sub.subname,sub.totalname,sub.totalid,pdy.chname as financeacc,total.totaltype as remark from 
+uat_prod0109.pay_subitems sub left join uat_prod0109.pay_totalitems total on sub.totalid=total.id 
+left join uat_prod0109.pay_dictionary pdy on sub.financeacc=pdy.serialid where total.totaltype='权利金' 
+and sub.subname LIKE '%${subname}%' and sub.totalname LIKE '%${totalname}%' 
+		 and sub.financeacc LIKE '%${financeacc}%' 
+		
+	</select>
+	
+	<select id="findSelTotal" resultType="java.lang.Integer" parameterType="com.sumao.model.Paysub">
+		select count(id) 
+		from (select sub.id,sub.subname,sub.totalname,sub.totalid,sub.financeacc,total.totaltype as remark from 
+uat_prod0109.pay_subitems sub left join uat_prod0109.pay_totalitems total on sub.totalid=total.id where total.totaltype='权利金' 
+and sub.subname LIKE '%${subname}%' and sub.totalname LIKE '%${totalname}%' 
+		 and sub.financeacc LIKE '%${financeacc}%') 
+	</select>
+	
+	<!-- 查询信息列表 -->
+	<select id="findPayselbondList" resultMap="BaseResultMap" parameterType="com.sumao.model.Paysub">
+		select sub.id,sub.subname,sub.totalname,sub.totalid,pdy.chname as financeacc,total.totaltype as remark from 
+uat_prod0109.pay_subitems sub left join uat_prod0109.pay_totalitems total on sub.totalid=total.id 
+left join uat_prod0109.pay_dictionary pdy on sub.financeacc=pdy.serialid where total.totaltype='保证金' 
+and sub.subname LIKE '%${subname}%' and sub.totalname LIKE '%${totalname}%' 
+		 and sub.financeacc LIKE '%${financeacc}%' 
+		
+	</select>
+	
+	<select id="findSelbondTotal" resultType="java.lang.Integer" parameterType="com.sumao.model.Paysub">
+		select count(id) 
+		from (select sub.id,sub.subname,sub.totalname,sub.totalid,sub.financeacc,total.totaltype as remark from 
+uat_prod0109.pay_subitems sub left join uat_prod0109.pay_totalitems total on sub.totalid=total.id where total.totaltype='保证金' 
+and sub.subname LIKE '%${subname}%' and sub.totalname LIKE '%${totalname}%' 
+		 and sub.financeacc LIKE '%${financeacc}%') 
+	</select>
+	
+	<select id="findUserorgList" resultMap="UserResultMap" parameterType="com.sumao.model.Pay_userorg">
+		 select * from (select distinct dorgid.org_id as MARKETINGID,dorg.name as MARKETING,compy.display_name as SELLER,
+ (case when prg.id is null then '创建' else '查看' end ) as rightgoldstat, 
+  (case when bond.id is null then '创建' else '查看' end ) as bondstat 
+  from uat_PUB0109.sumao_dpi_organization dorgid 
+ left join uat_PUB0109.dpi_organization dorg on dorgid.org_id=dorg.org_id 
+ left join uat_PROD0109.sumao_mst_source_company compy on dorgid.supplier_contact=compy.id 
+ left join uat_PROD0109.pay_rightgold prg on dorgid.org_id=prg.marketingid  
+ left join uat_PROD0109.pay_bond bond on dorgid.org_id=bond.marketingid) 
+ where seller LIKE '%${seller}%' and MARKETING LIKE '%${marketing}%' and MARKETINGID LIKE '%${marketingid}%' 
+	</select>
+	
+	
+	<select id="findPayrTotal" resultType="java.lang.Integer" parameterType="com.sumao.model.Pay_userorg">
+		select count(MARKETINGID)
+		from (select distinct dorgid.org_id as MARKETINGID,dorg.name as MARKETING,compy.display_name as SELLER,
+ (case when prg.id is null then '创建' else '查看' end ) as rightgoldstat, 
+  (case when bond.id is null then '创建' else '查看' end ) as bondstat 
+  from uat_PUB0109.sumao_dpi_organization dorgid 
+ left join uat_PUB0109.dpi_organization dorg on dorgid.org_id=dorg.org_id 
+ left join uat_PROD0109.sumao_mst_source_company compy on dorgid.supplier_contact=compy.id 
+ left join uat_PROD0109.pay_rightgold prg on dorgid.org_id=prg.marketingid  
+ left join uat_PROD0109.pay_bond bond on dorgid.org_id=bond.marketingid) 
+ where seller LIKE '%${seller}%' and MARKETING LIKE '%${marketing}%' and MARKETINGID LIKE '%${marketingid}%' 	
+	</select>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.pay_subitems where ID = #{id,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from uat_prod0109.pay_subitems
+		where ID = #{id,jdbcType=VARCHAR}
+	</delete>
+	
+	<delete id="delRightByPrimaryKey" parameterType="java.lang.String">
+	delete uat_prod0109.pay_rightgold t where t.subitemcode = #{id,jdbcType=VARCHAR}
+	</delete>
+	
+	<delete id="deBondByPrimaryKey" parameterType="java.lang.String">
+		delete uat_prod0109.pay_bond t where t.subitemcode = #{id,jdbcType=VARCHAR}
+	</delete>
+	
+	<update id="editaudit" parameterType="java.lang.String">
+		update uat_prod0109.pay_subitems 
+		set audit_status ='已通过' 
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	<insert id="insert" parameterType="com.sumao.model.Paysub">
+		insert into uat_prod0109.pay_subitems (ID, subname, totalname, totalid, financeacc, operuser, operdate, remark,remark1,codeid) values (
+		#{id,jdbcType=VARCHAR},
+		#{subname,jdbcType=VARCHAR},
+		#{totalname,jdbcType=VARCHAR},
+		#{totalid,jdbcType=VARCHAR},
+		#{financeacc,jdbcType=VARCHAR},
+		#{operuser,jdbcType=VARCHAR},
+		#{operdate,jdbcType=VARCHAR},
+		#{remark,jdbcType=VARCHAR},
+		#{remark1,jdbcType=VARCHAR},
+		#{codeid,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<update id="updateByPrimaryKey" parameterType="com.sumao.model.Paysub">
+		update uat_prod0109.pay_subitems 
+		set 
+		subname = #{subname,jdbcType=VARCHAR},
+		totalname =	#{totalname,jdbcType=VARCHAR},
+		totalid =#{totalid,jdbcType=VARCHAR},
+		financeacc =#{financeacc,jdbcType=VARCHAR},
+		operuser =	#{operuser,jdbcType=VARCHAR},
+		operdate =#{operdate,jdbcType=VARCHAR},
+		remark =#{remark,jdbcType=VARCHAR},
+		remark1 =#{remark1,jdbcType=VARCHAR} 
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 根据销售组织以及配置，验证是否已存在-->
+	<select id="getprovingmkid" resultType="java.lang.Integer" parameterType="java.lang.String">
+		select count(ID) from uat_prod0109.pay_newaccountingrules
+		where marketingid = #{mkid,jdbcType=VARCHAR} 
+	</select>
+	
+	<select id="showSeller" resultMap="UserResultMap">
+		 select distinct compy.display_name as SELLER from uat_PUB0109.sumao_dpi_organization dorgid 
+ left join uat_PUB0109.dpi_organization dorg on dorgid.org_id=dorg.org_id 
+ left join uat_PROD0109.sumao_mst_source_company compy on dorgid.supplier_contact=compy.id where compy.display_name is not null 
+	</select>
+	
+	<select id="selSeller" resultMap="UserResultMap" parameterType="java.util.HashMap">
+		select distinct dorgid.org_id as MARKETINGID,dorg.name as MARKETING,compy.display_name as SELLER 
+  from uat_PUB0109.sumao_dpi_organization dorgid 
+ left join uat_PUB0109.dpi_organization dorg on dorgid.org_id=dorg.org_id 
+ left join uat_PROD0109.sumao_mst_source_company compy on dorgid.supplier_contact=compy.id where compy.display_name=#{marketing,jdbcType=VARCHAR} 
+	</select>
+	
+</mapper>

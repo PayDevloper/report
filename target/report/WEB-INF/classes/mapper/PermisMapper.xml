@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+	<mapper namespace="com.sumao.dao.PermisMapper">
+		<resultMap id="Permis" type="com.sumao.model.ComTable">
+		<result column="col1" property="col1" jdbcType="VARCHAR" />
+			</resultMap>
+	<!-- 存储调用,返回热门产品top的list -->
+	<select id="findPermiss" statementType="CALLABLE" parameterType="java.util.Map">
+		{call P_PERMISS(#{Permissresult,jdbcType=CURSOR,mode=OUT,javaType=ResultSet, resultMap=Permis}, #{tokenin,mode=IN,jdbcType=VARCHAR})}
+		</select>
+	</mapper>

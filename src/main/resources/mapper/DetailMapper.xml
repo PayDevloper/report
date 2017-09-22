@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sumao.dao.DetailMapper">
+	<resultMap id="OrderDetail" type="com.sumao.model.ComTable">
+		<result column="col1" property="col1" jdbcType="VARCHAR" />
+		<result column="col2" property="col2" jdbcType="VARCHAR" />
+		<result column="col3" property="col3" jdbcType="VARCHAR" />
+		<result column="col4" property="col4" jdbcType="VARCHAR" />
+		<result column="col5" property="col5" jdbcType="VARCHAR" />
+		<result column="col6" property="col6" jdbcType="VARCHAR" />
+		<result column="col7" property="col7" jdbcType="VARCHAR" />
+		<result column="col8" property="col8" jdbcType="VARCHAR" />
+		<result column="col9" property="col9" jdbcType="VARCHAR" />
+		<result column="col10" property="col10" jdbcType="VARCHAR" />
+		<result column="col11" property="col11" jdbcType="VARCHAR" />
+		<result column="col12" property="col12" jdbcType="VARCHAR" />
+		<result column="col13" property="col13" jdbcType="VARCHAR" />
+		<result column="col14" property="col14" jdbcType="VARCHAR" />
+		<result column="col15" property="col15" jdbcType="VARCHAR" />
+		<result column="col16" property="col16" jdbcType="VARCHAR" />
+		<result column="col17" property="col17" jdbcType="VARCHAR" />
+		<result column="col18" property="col18" jdbcType="VARCHAR" />
+		<result column="col19" property="col19" jdbcType="VARCHAR" />
+		<result column="col20" property="col20" jdbcType="VARCHAR" />
+		<result column="col21" property="col21" jdbcType="VARCHAR" />
+		<result column="col22" property="col22" jdbcType="VARCHAR" />
+		<result column="col23" property="col23" jdbcType="VARCHAR" />
+		<result column="col24" property="col24" jdbcType="VARCHAR" />
+		<result column="col25" property="col25" jdbcType="VARCHAR" />
+		<result column="col26" property="col26" jdbcType="VARCHAR" />
+		<result column="col27" property="col27" jdbcType="VARCHAR" />
+	</resultMap>
+    <resultMap id="saleSummaryMap" type="com.sumao.report.salesummary.pojo.SaleSummeryElement">
+        <result column="remark3" property="remark3" jdbcType="NUMERIC" />
+        <result column="remark4" property="remark4" jdbcType="NUMERIC" />
+    </resultMap>
+	<!--获取汇总信息明细表信息-->
+<select id="showOrderByPage" statementType="CALLABLE" parameterType="java.util.Map">
+		{call P_ORDERLIST(#{resultPage,jdbcType=CURSOR,mode=OUT,javaType=ResultSet, resultMap=OrderDetail}, #{startdatetime,mode=IN,jdbcType=VARCHAR},#{enddatetime,mode=IN,jdbcType=VARCHAR}, #{startPos,mode=IN,jdbcType=VARCHAR},#{pageSize,mode=IN,jdbcType=VARCHAR},#{col1,mode=IN,jdbcType=VARCHAR},#{col2,mode=IN,jdbcType=VARCHAR}, #{col3,mode=IN,jdbcType=VARCHAR},#{col4,mode=IN,jdbcType=VARCHAR},
+		#{col5,mode=IN,jdbcType=VARCHAR},#{col6,mode=IN,jdbcType=VARCHAR},#{col9,mode=IN,jdbcType=VARCHAR},#{col10,mode=IN,jdbcType=VARCHAR},#{col11,mode=IN,jdbcType=VARCHAR})}</select>
+	<!-- 获取汇总信息明细表信息数据条数 -->
+<select id="getOrderCount" statementType="CALLABLE" parameterType="java.util.Map">
+		{call D_ORDER(#{resultOrderNum,mode=OUT,jdbcType=INTEGER},#{startdatetime,mode=IN,jdbcType=VARCHAR},#{enddatetime,mode=IN,jdbcType=VARCHAR},#{col1,mode=IN,jdbcType=VARCHAR},#{col2,mode=IN,jdbcType=VARCHAR}, #{col3,mode=IN,jdbcType=VARCHAR},#{col4,mode=IN,jdbcType=VARCHAR},
+		#{col5,mode=IN,jdbcType=VARCHAR},#{col6,mode=IN,jdbcType=VARCHAR},#{col9,mode=IN,jdbcType=VARCHAR},#{col10,mode=IN,jdbcType=VARCHAR},#{col11,mode=IN,jdbcType=VARCHAR})}</select>
+	<!--获取供应商明细表信息-->
+	<select id="showSupplierByPage" statementType="CALLABLE" parameterType="java.util.Map">
+		{call ${tableSpace_prod}.P_SUPPLIERLIST(#{resultSupplier,jdbcType=CURSOR,mode=OUT,javaType=ResultSet, resultMap=OrderDetail}, #{startdatetime,mode=IN,jdbcType=VARCHAR},#{enddatetime,mode=IN,jdbcType=VARCHAR}, #{startPos,mode=IN,jdbcType=VARCHAR},#{pageSize,mode=IN,jdbcType=VARCHAR},#{col1,mode=IN,jdbcType=VARCHAR},#{col10,mode=IN,jdbcType=VARCHAR})}</select>
+
+	<!-- 获取供应商明细表信息数据条数 -->
+	<select id="getSupplierCount" statementType="CALLABLE" parameterType="java.util.Map">
+		{call ${tableSpace_prod}.D_SUPPLIER(#{resultSupplierNum,mode=OUT,jdbcType=INTEGER},#{startdatetime,mode=IN,jdbcType=VARCHAR},#{enddatetime,mode=IN,jdbcType=VARCHAR},#{col1,mode=IN,jdbcType=VARCHAR},#{col10,mode=IN,jdbcType=VARCHAR})}</select>
+	<!--获取地区明细表信息-->
+	<select id="showAreaByPage" statementType="CALLABLE" parameterType="java.util.Map">
+		{call ${tableSpace_prod}.P_AREALIST(#{resultArea,jdbcType=CURSOR,mode=OUT,javaType=ResultSet, resultMap=OrderDetail}, #{startdatetime,mode=IN,jdbcType=VARCHAR},#{enddatetime,mode=IN,jdbcType=VARCHAR}, #{startPos,mode=IN,jdbcType=VARCHAR},#{pageSize,mode=IN,jdbcType=VARCHAR},#{col1,mode=IN,jdbcType=VARCHAR},#{col2,mode=IN,jdbcType=VARCHAR}, #{col3,mode=IN,jdbcType=VARCHAR},#{col10,mode=IN,jdbcType=VARCHAR})}</select>
+
+	<!-- 获取地区明细表信息数据条数 -->
+	<select id="getAreaCount" statementType="CALLABLE" parameterType="java.util.Map">
+		{call ${tableSpace_prod}.D_AREA(#{resultAreaNum,mode=OUT,jdbcType=INTEGER},#{startdatetime,mode=IN,jdbcType=VARCHAR},#{enddatetime,mode=IN,jdbcType=VARCHAR},#{col1,mode=IN,jdbcType=VARCHAR},#{col2,mode=IN,jdbcType=VARCHAR}, #{col3,mode=IN,jdbcType=VARCHAR},#{col10,mode=IN,jdbcType=VARCHAR})}</select>
+	<!--获取销售明细表信息-->
+	<select id="showSaleByPage" statementType="CALLABLE" parameterType="java.util.Map">{call ${tableSpace_prod}.P_SALELIST(#{resultSale,jdbcType=CURSOR,mode=OUT,javaType=ResultSet, resultMap=OrderDetail}, #{startdatetime,mode=IN,jdbcType=VARCHAR},#{enddatetime,mode=IN,jdbcType=VARCHAR}, #{startPos,mode=IN,jdbcType=VARCHAR},#{pageSize,mode=IN,jdbcType=VARCHAR},#{col3,mode=IN,jdbcType=VARCHAR},#{col4,mode=IN,jdbcType=VARCHAR}, #{col5,mode=IN,jdbcType=VARCHAR}, #{col6,mode=IN,jdbcType=VARCHAR},#{col10,mode=IN,jdbcType=VARCHAR})}</select>
+
+	<!-- 获取销售明细表信息数据条数 -->
+	<select id="getSaleCount" statementType="CALLABLE" parameterType="java.util.Map">{call ${tableSpace_prod}.D_SALE(#{resultSaleNum,mode=OUT,jdbcType=INTEGER},#{startdatetime,mode=IN,jdbcType=VARCHAR},#{enddatetime,mode=IN,jdbcType=VARCHAR},#{col3,mode=IN,jdbcType=VARCHAR},#{col4,mode=IN,jdbcType=VARCHAR}, #{col5,mode=IN,jdbcType=VARCHAR}, #{col6,mode=IN,jdbcType=VARCHAR},#{col10,mode=IN,jdbcType=VARCHAR})}</select>
+	<!--获取客户明细表信息-->
+	<select id="showClientByPage" statementType="CALLABLE" parameterType="java.util.Map">{call ${tableSpace_prod}.P_CLIENTLIST(#{resultClient,jdbcType=CURSOR,mode=OUT,javaType=ResultSet, resultMap=OrderDetail}, #{startdatetime,mode=IN,jdbcType=VARCHAR},#{enddatetime,mode=IN,jdbcType=VARCHAR}, #{startPos,mode=IN,jdbcType=VARCHAR},#{pageSize,mode=IN,jdbcType=VARCHAR},#{col3,mode=IN,jdbcType=VARCHAR},#{col4,mode=IN,jdbcType=VARCHAR}, #{col5,mode=IN,jdbcType=VARCHAR},#{col10,mode=IN,jdbcType=VARCHAR})}</select>
+
+	<!-- 获客户明细表信息数据条数 -->
+	<select id="getClientCount" statementType="CALLABLE" parameterType="java.util.Map">{call ${tableSpace_prod}.D_CLIENT(#{resultClientNum,mode=OUT,jdbcType=INTEGER},#{startdatetime,mode=IN,jdbcType=VARCHAR},#{enddatetime,mode=IN,jdbcType=VARCHAR},#{col3,mode=IN,jdbcType=VARCHAR},#{col4,mode=IN,jdbcType=VARCHAR}, #{col5,mode=IN,jdbcType=VARCHAR},#{col10,mode=IN,jdbcType=VARCHAR})}</select>
+	<!-- 查询订单的类型 -->
+	<select id="selecttype" resultMap="OrderDetail">
+		select
+		CHNAME as col1,SERIALID as col2,ID as col3,TYPE as col4,ENNAME as col5
+		from ${tableSpace_prod}.PAY_DICTIONARY where
+		 TYPE=#{typeIn,jdbcType=VARCHAR}
+	</select>
+	   <!-- 查询订单的类型 -->
+    <select id="findSummaryList" resultType="com.sumao.report.salesummary.pojo.SaleSummeryElement" parameterType="com.sumao.report.salesummary.pojo.SaleSummeryRequest">
+        select to_char(trunc(sum(quantity),2),'FM999,999,999,999,990') as quantity,to_char(trunc(sum(new_price)/10000,2),'FM999,999,999,999,990.00') as totalprice from(
+        select distinct do.type,do.state,do.order_id,di.product_id,sei.enterpriseid,sei.enterprise_name,sei.enterprise_type,di.quantity/1000 as quantity,(di.quantity*di.new_price) as new_price,do.submitted_date 
+        from ${tableSpace_prod}.DCSPP_ORDER do
+        left join ${tableSpace_prod}.DPS_USER du on do.profile_id=du.id
+        left join ${tableSpace_prod}.sumao_enterprise_info sei on du.enterpriseid=sei.enterpriseid
+        left join ${tableSpace_prod}.DCSPP_ORDER_ITEM doi on do.order_id=doi.order_id
+        left join ${tableSpace_prod}.DCSPP_ITEM di on doi.commerce_items=di.commerce_item_id
+        left join ${tableSpace_prod}.SUMAO_ORDER_OTHER soo on do.order_id=soo.order_id
+        left join ${tableSpace_pub}.sumao_dpi_organization sdo on soo.SALER_ID=sdo.org_id
+        where sdo.org_type is not null and  #{saleorganid,jdbcType=VARCHAR} like '%' ||soo.saler_id || '%' 
+        and  #{businessType,jdbcType=VARCHAR} like '%' ||sdo.org_type  || '%' 
+        and  #{orderstate,jdbcType=VARCHAR} like '%' ||do.state || '%' 
+        and  #{ordertype,jdbcType=VARCHAR} like '%' ||do.type || '%' 
+        and (do.submitted_date<![CDATA[>to_date(#{startDate},'yyyy-mm-dd hh24:mi:ss')]]>
+        and do.submitted_date<![CDATA[<to_date(#{endDate},'yyyy-mm-dd hh24:mi:ss')]]>)
+)
+    </select>
+</mapper>

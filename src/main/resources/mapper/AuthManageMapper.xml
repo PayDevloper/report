@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sumao.dao.AuthManageMapper">
+	<!-- 表和模型映射关系维护 -->
+	<resultMap id="BaseUserMap" type="com.sumao.model.Paysub">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="TEXT" property="subname" jdbcType="VARCHAR" />
+		<result column="DESCRIPT" property="remark" jdbcType="VARCHAR" />
+        <result column="USERID" property="totalid" jdbcType="VARCHAR" />
+		<result column="USERNAME" property="totalname" jdbcType="VARCHAR" />
+		<result column="CREATETIME" property="operdate" jdbcType="VARCHAR" />	
+		<result column="MODIFIEDTIME" property="remark1" jdbcType="VARCHAR" />
+		<result column="operuser" property="operuser" jdbcType="VARCHAR" />
+	</resultMap>
+
+
+	<!-- 岗位表的字段属性 -->
+	<sql id="Base_Column_List">
+		ID, TEXT, DESCRIPT,USERID,USERNAME,CREATETIME,MODIFIEDTIME,operuser
+	</sql>
+
+	<!-- 查询岗位信息列表 -->
+	<select id="findauthList" resultMap="BaseUserMap" parameterType="com.sumao.model.Paysub">
+		select
+		<include refid="Base_Column_List" />
+		from UAT_PROD0109.syrole where text LIKE '%${subname}%' and USERNAME LIKE '%${totalname}%' 	
+	</select>
+	<!-- 查询岗位信息总行数 -->
+	<select id="findTotal" resultType="java.lang.Integer" parameterType="com.sumao.model.Paysub">
+		select count(id) 
+		from (select
+		<include refid="Base_Column_List" />
+		from UAT_PROD0109.syrole where text LIKE '%${subname}%' and USERNAME LIKE '%${totalname}%' ) 
+	</select>
+	<!-- 插入一条岗位信息到列表 -->
+	<insert id="insert" parameterType="com.sumao.model.Paysub">
+		insert into UAT_PROD0109.syrole (ID, TEXT, DESCRIPT, USERID, USERNAME, CREATETIME, operuser) values (
+		#{id,jdbcType=VARCHAR},
+		#{subname,jdbcType=VARCHAR},
+		#{remark,jdbcType=VARCHAR},
+		#{totalid,jdbcType=VARCHAR},
+		#{totalname,jdbcType=VARCHAR},
+		#{operdate,jdbcType=VARCHAR},
+		#{operuser,jdbcType=VARCHAR}
+		)
+	</insert>
+	<!-- 更新一条岗位信息到列表 -->
+	<update id="updateByPrimaryKey" parameterType="com.sumao.model.Paysub">
+		update UAT_PROD0109.syrole 
+		set 
+		TEXT = #{subname,jdbcType=VARCHAR},
+		DESCRIPT =	#{remark,jdbcType=VARCHAR},
+		USERID =#{totalid,jdbcType=VARCHAR},	
+		USERNAME =#{totalname,jdbcType=VARCHAR},
+		MODIFIEDTIME =#{operdate,jdbcType=VARCHAR},		
+		operuser =#{operuser,jdbcType=VARCHAR}
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	<!-- 删除一条岗位信息到列表 -->
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from UAT_PROD0109.syrole
+		where ID = #{id,jdbcType=VARCHAR}
+	</delete>
+	<!-- 模糊查询岗位信息列表 -->
+	<select id="findposition" resultMap="BaseUserMap" parameterType="com.sumao.model.Paysub">
+		select
+		<include refid="Base_Column_List" />
+		from UAT_PROD0109.syrole where USERNAME LIKE '%${subname}%' 
+	</select>
+</mapper>

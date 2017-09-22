@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sumao.dao.PayruleMapper">
+	<!-- 表和模型映射关系维护 -->
+	<resultMap id="BaseResultMap" type="com.sumao.model.Payrule">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="seller" property="seller" jdbcType="VARCHAR" />
+		<result column="sales_org" property="sales_org" jdbcType="VARCHAR" />
+		<result column="sales_orgID" property="sales_orgID" jdbcType="VARCHAR" />
+		<result column="member_status" property="member_status" jdbcType="VARCHAR" />
+		<result column="margin_status" property="margin_status" jdbcType="VARCHAR" />
+		<result column="customer_status" property="customer_status" jdbcType="VARCHAR" />
+		<result column="audit_status" property="audit_status" jdbcType="VARCHAR" />
+		<result column="operuser" property="operuser" jdbcType="VARCHAR" />
+		<result column="operdate" property="operdate" jdbcType="VARCHAR" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="codeid" property="codeid" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 表的字段属性 -->
+	<sql id="Base_Column_List">
+		ID, seller, sales_org, sales_orgID, member_status, margin_status, customer_status, audit_status,operuser,operdate,remark,codeid
+	</sql>
+
+	<!-- 查询信息列表 -->
+	<select id="findPayrList" resultMap="BaseResultMap" parameterType="com.sumao.model.Payrule">
+		select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.pay_rule where seller LIKE '%${seller}%' and sales_org LIKE '%${sales_org}%' 
+		 and sales_orgID LIKE '%${sales_orgID}%' 
+		
+	</select>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.pay_rule where ID = #{id,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from uat_prod0109.pay_rule
+		where ID = #{id,jdbcType=VARCHAR}
+	</delete>
+	
+	<update id="editaudit" parameterType="java.lang.String">
+		update uat_prod0109.pay_rule 
+		set audit_status ='已通过' 
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	<insert id="insert" parameterType="com.sumao.model.Payrule">
+		insert into uat_prod0109.pay_rule (ID, seller, sales_org, sales_orgID, member_status, margin_status, 
+		customer_status, audit_status, operuser, operdate, remark,codeid) values (
+		#{id,jdbcType=VARCHAR},
+		#{seller,jdbcType=VARCHAR},
+		#{sales_org,jdbcType=VARCHAR},
+		#{sales_orgID,jdbcType=VARCHAR},
+		#{member_status,jdbcType=VARCHAR},
+		#{margin_status,jdbcType=VARCHAR},
+		#{customer_status,jdbcType=VARCHAR},
+		#{audit_status,jdbcType=VARCHAR},
+		#{operuser,jdbcType=VARCHAR},
+		#{operdate,jdbcType=VARCHAR},
+		#{remark,jdbcType=VARCHAR},
+		#{codeid,jdbcType=VARCHAR}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.sumao.model.Syuser">
+		insert into uat_prod0109.SYUSER
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				ID,
+			</if>
+			<if test="name != null">
+				NAME,
+			</if>
+			<if test="password != null">
+				PASSWORD,
+			</if>
+			<if test="createdatetime != null">
+				CREATEDATETIME,
+			</if>
+			<if test="modifydatetime != null">
+				MODIFYDATETIME,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				#{password,jdbcType=VARCHAR},
+			</if>
+			<if test="createdatetime != null">
+				#{createdatetime,jdbcType=DATE},
+			</if>
+			<if test="modifydatetime != null">
+				#{modifydatetime,jdbcType=DATE},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.sumao.model.Payrule">
+		update uat_prod0109.SYUSER
+		<set>
+			<if test="name != null">
+				NAME = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				PASSWORD = #{password,jdbcType=VARCHAR},
+			</if>
+			<if test="createdatetime != null">
+				CREATEDATETIME = #{createdatetime,jdbcType=DATE},
+			</if>
+			<if test="modifydatetime != null">
+				MODIFYDATETIME = #{modifydatetime,jdbcType=DATE},
+			</if>
+		</set>
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.sumao.model.Payrule">
+		update uat_prod0109.pay_rule 
+		set 
+		seller = #{seller,jdbcType=VARCHAR},
+		sales_org =	#{sales_org,jdbcType=VARCHAR},
+		sales_orgID =#{sales_orgID,jdbcType=VARCHAR},
+		member_status =#{member_status,jdbcType=VARCHAR},
+		margin_status =	#{margin_status,jdbcType=VARCHAR},
+		customer_status =#{customer_status,jdbcType=VARCHAR},
+		audit_status =#{audit_status,jdbcType=VARCHAR},
+		operuser =	#{operuser,jdbcType=VARCHAR},
+		operdate =#{operdate,jdbcType=VARCHAR},
+		remark =#{remark,jdbcType=VARCHAR} 
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+</mapper>

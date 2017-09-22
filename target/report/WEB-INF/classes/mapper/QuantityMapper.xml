@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sumao.dao.QuantityMapper">
+	<resultMap id="QuantityTops" type="com.sumao.model.ClientTop">
+		<result column="Serial" property="serialc" jdbcType="VARCHAR" />
+		<result column="gradeNumber" property="sort" jdbcType="VARCHAR" />
+		<result column="totalQuantity" property="totalQuantityc" jdbcType="VARCHAR" />
+		<result column="totalPrice" property="totalPricec" jdbcType="VARCHAR" />
+		<result column="Average" property="averagec" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="ClientTops" type="com.sumao.model.ClientTop">
+		<result column="Serial" property="serialc" jdbcType="VARCHAR" />
+		<result column="enterprisename" property="sort" jdbcType="VARCHAR" />
+		<result column="totalQuantity" property="totalQuantityc" jdbcType="VARCHAR" />
+		<result column="totalPrice" property="totalPricec" jdbcType="VARCHAR" />
+		<result column="Average" property="averagec" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="SuplierTops" type="com.sumao.model.ClientTop">
+		<result column="Serial" property="serialc" jdbcType="VARCHAR" />
+		<result column="displayname" property="sort" jdbcType="VARCHAR" />
+		<result column="totalQuantity" property="totalQuantityc" jdbcType="VARCHAR" />
+		<result column="totalPrice" property="totalPricec" jdbcType="VARCHAR" />
+		<result column="Average" property="averagec" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="AreaTops" type="com.sumao.model.ClientTop">
+		<result column="Serial" property="serialc" jdbcType="VARCHAR" />
+		<result column="city" property="sort" jdbcType="VARCHAR" />
+		<result column="totalQuantity" property="totalQuantityc" jdbcType="VARCHAR" />
+		<result column="totalPrice" property="totalPricec" jdbcType="VARCHAR" />
+		<result column="Average" property="averagec" jdbcType="VARCHAR" />
+	</resultMap>
+	<!-- 存储调用,返回热门产品top的list -->
+	<select id="findTops" statementType="CALLABLE" parameterType="java.util.Map">{call UAT_PROD0109.P_TOPLIST(#{result,jdbcType=CURSOR,mode=OUT,javaType=ResultSet, resultMap=QuantityTops}, #{startdatetime,mode=IN,jdbcType=VARCHAR},#{enddatetime,mode=IN,jdbcType=VARCHAR}, #{orgnid,mode=IN,jdbcType=VARCHAR})}</select>
+	<!-- 存储调用,返回客户top的list -->
+	<select id="findClientTops" statementType="CALLABLE" parameterType="java.util.Map">{call UAT_PROD0109.P_CLIENTTOP(#{resultclient,jdbcType=CURSOR,mode=OUT,javaType=ResultSet, resultMap=ClientTops}, #{startdatetime,mode=IN,jdbcType=VARCHAR},#{enddatetime,mode=IN,jdbcType=VARCHAR}, #{orgnid,mode=IN,jdbcType=VARCHAR})}</select>
+	<!-- 存储调用,返回供应商top的list -->
+	<select id="findSuplierTops" statementType="CALLABLE" parameterType="java.util.Map">{call UAT_PROD0109.P_SUPPLIERTOP(#{resultSuplier,jdbcType=CURSOR,mode=OUT,javaType=ResultSet, resultMap=SuplierTops}, #{startdatetime,mode=IN,jdbcType=VARCHAR},#{enddatetime,mode=IN,jdbcType=VARCHAR}, #{orgnid,mode=IN,jdbcType=VARCHAR})}</select>
+	<!-- 存储调用,返回地区top的list -->
+	<select id="findAreaTops" statementType="CALLABLE" parameterType="java.util.Map">{call UAT_PROD0109.P_AREATOP(#{resultArea,jdbcType=CURSOR,mode=OUT,javaType=ResultSet, resultMap=AreaTops}, #{startdatetime,mode=IN,jdbcType=VARCHAR},#{enddatetime,mode=IN,jdbcType=VARCHAR}, #{orgnid,mode=IN,jdbcType=VARCHAR})}</select>
+	<!-- 存储调用,返回客户top的list -->
+	<select id="CountClient" statementType="CALLABLE" parameterType="java.util.Map">{call UAT_PROD0109.P_SUMCLIENT(#{resultCountClient,mode=OUT,jdbcType=INTEGER}, #{startdatetime,mode=IN,jdbcType=VARCHAR},#{enddatetime,mode=IN,jdbcType=VARCHAR}, #{orgnid,mode=IN,jdbcType=VARCHAR})}</select>
+	<!-- 存储调用,返回新增top的list -->
+	<select id="findNewClient" statementType="CALLABLE" parameterType="java.util.Map">{call UAT_PROD0109.P_NEWCLIENTS(#{resultCountNew,mode=OUT,jdbcType=INTEGER}, #{startdatetime,mode=IN,jdbcType=VARCHAR},#{enddatetime,mode=IN,jdbcType=VARCHAR}, #{orgnid,mode=IN,jdbcType=VARCHAR})}</select>
+	
+	<!-- 存储调用,返回已经支付的订单数-->
+	<select id="CountPayed" statementType="CALLABLE" parameterType="java.util.Map">
+		{call UAT_PROD0109.P_PAYED(#{resultPayed,jdbcType=CURSOR,mode=OUT,javaType=ResultSet, resultMap=QuantityTops}, #{startdatetime,mode=IN,jdbcType=VARCHAR},#{enddatetime,mode=IN,jdbcType=VARCHAR}, #{orgnid,mode=IN,jdbcType=VARCHAR})}</select>
+	<!-- 存储调用,返回正在支付的订单数-->
+	<select id="CountPaying" statementType="CALLABLE" parameterType="java.util.Map">
+		{call UAT_PROD0109.P_PAYING(#{resultPaying,jdbcType=CURSOR,mode=OUT,javaType=ResultSet, resultMap=QuantityTops}, #{startdatetime,mode=IN,jdbcType=VARCHAR},#{enddatetime,mode=IN,jdbcType=VARCHAR}, #{orgnid,mode=IN,jdbcType=VARCHAR})}</select>
+	<!-- 存储调用,返回已经取消支付的订单数-->
+	<select id="CountRemoved" statementType="CALLABLE" parameterType="java.util.Map">
+		{call UAT_PROD0109.P_REMOVED(#{resultRemoved,jdbcType=CURSOR,mode=OUT,javaType=ResultSet, resultMap=QuantityTops},#{startdatetime,mode=IN,jdbcType=VARCHAR},#{enddatetime,mode=IN,jdbcType=VARCHAR}, #{orgnid,mode=IN,jdbcType=VARCHAR})}</select>
+	<!-- 存储调用,返回总订单的订单数-->
+	<select id="CountTotal" statementType="CALLABLE" parameterType="java.util.Map">
+		{call UAT_PROD0109.P_SUMTOTAL(#{resultTotal,jdbcType=CURSOR,mode=OUT,javaType=ResultSet, resultMap=QuantityTops}, #{startdatetime,mode=IN,jdbcType=VARCHAR},#{enddatetime,mode=IN,jdbcType=VARCHAR}, #{orgnid,mode=IN,jdbcType=VARCHAR})}</select>
+	
+	<!-- 存储调用,返回汇总信息的总订单总数-->
+	<select id="SummaryFirst" statementType="CALLABLE" parameterType="java.util.Map">
+		{call UAT_PROD0109.P_SUMMARYFIRST(#{resultFirst,jdbcType=CURSOR,mode=OUT,javaType=ResultSet, resultMap=QuantityTops},#{startdatetime,mode=IN,jdbcType=VARCHAR},#{enddatetime,mode=IN,jdbcType=VARCHAR}, #{orgnid,mode=IN,jdbcType=VARCHAR})}</select>
+	<!-- 存储调用,返回汇总信息的总金额-->
+	<select id="SummarySecond" statementType="CALLABLE" parameterType="java.util.Map">
+		{call UAT_PROD0109.P_SUMMAYSECOND(#{resultSecond,jdbcType=CURSOR,mode=OUT,javaType=ResultSet, resultMap=QuantityTops},#{startdatetime,mode=IN,jdbcType=VARCHAR},#{enddatetime,mode=IN,jdbcType=VARCHAR}, #{orgnid,mode=IN,jdbcType=VARCHAR})}</select>
+	<!-- 存储调用,返回汇总信息的总销量-->
+	<select id="SummaryThird" statementType="CALLABLE" parameterType="java.util.Map">
+		{call UAT_PROD0109.P_SUMMARYTHIRD(#{resultThird,jdbcType=CURSOR,mode=OUT,javaType=ResultSet, resultMap=QuantityTops},#{startdatetime,mode=IN,jdbcType=VARCHAR},#{enddatetime,mode=IN,jdbcType=VARCHAR}, #{orgnid,mode=IN,jdbcType=VARCHAR})}</select>
+	<!-- 存储调用,返回已经支付的已经出库数量-->
+	<select id="SummaryDeliver" statementType="CALLABLE" parameterType="java.util.Map">
+		{call UAT_PROD0109.P_DELIVER(#{resultDeliver,jdbcType=CURSOR,mode=OUT,javaType=ResultSet, resultMap=QuantityTops},#{startdatetime,mode=IN,jdbcType=VARCHAR},#{enddatetime,mode=IN,jdbcType=VARCHAR}, #{orgnid,mode=IN,jdbcType=VARCHAR})}</select>
+	
+	<!-- 存储调用,返回客户的信息以及新增-->
+	<select id="SummaryClients" statementType="CALLABLE" parameterType="java.util.Map">{call UAT_PROD0109.P_SUMMARYCLIENT(#{resultClients,mode=OUT,jdbcType=INTEGER},#{startdatetime,mode=IN,jdbcType=VARCHAR},#{enddatetime,mode=IN,jdbcType=VARCHAR}, #{orgnid,mode=IN,jdbcType=VARCHAR})}</select>
+	<!-- 存储调用,返回已经支付的订单数-->
+	<select id="SummaryNewClients" statementType="CALLABLE" parameterType="java.util.Map">{call UAT_PROD0109.P_SUMMARYNEW(#{resultNewClients,mode=OUT,jdbcType=INTEGER},#{enddatetime,mode=IN,jdbcType=VARCHAR}, #{orgnid,mode=IN,jdbcType=VARCHAR})}</select>
+	<!-- 存储调用,返回已经支付的订单数-->
+	<select id="SummaryNewClient" statementType="CALLABLE" parameterType="java.util.Map">{call UAT_PROD0109.P_SUMMARYNEW(#{resultNewClient,mode=OUT,jdbcType=INTEGER},#{enddatetime,mode=IN,jdbcType=VARCHAR}, #{orgnid,mode=IN,jdbcType=VARCHAR})}</select>
+</mapper>

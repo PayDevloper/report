@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sumao.dao.PaycostpayMapper">
+	<!-- 表和模型映射关系维护 -->
+	<resultMap id="BaseResultMap" type="com.sumao.model.Paycostpay">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="seller" property="seller" jdbcType="VARCHAR" />
+		<result column="marketing" property="marketing" jdbcType="VARCHAR" />
+		<result column="marketingid" property="marketingid" jdbcType="VARCHAR" />
+		<result column="paymentcode" property="paymentcode" jdbcType="VARCHAR" />
+		<result column="subitemname" property="subitemname" jdbcType="VARCHAR" />
+		<result column="totalitemname" property="totalitemname" jdbcType="VARCHAR" />
+		<result column="financeacc" property="financeacc" jdbcType="VARCHAR" />
+		<result column="shouldpay" property="shouldpay" jdbcType="VARCHAR" />
+		<result column="actualpay" property="actualpay" jdbcType="VARCHAR" />
+		<result column="paymentmethod" property="paymentmethod" jdbcType="VARCHAR" />
+		<result column="payorderid" property="payorderid" jdbcType="VARCHAR" />
+		<result column="paytime" property="paytime" jdbcType="VARCHAR" />
+		<result column="createperson" property="createperson" jdbcType="VARCHAR" />
+		<result column="createtime" property="createtime" jdbcType="VARCHAR" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="codeid" property="codeid" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 表的字段属性 -->
+	<sql id="Base_Column_List">
+		ID, seller, marketing, marketingid, paymentcode, subitemname, totalitemname, financeacc,shouldpay,actualpay,paymentmethod,payorderid,paytime,createperson,createtime,remark,codeid
+	</sql>
+
+	<!-- 查询信息列表 -->
+	<select id="findPayrList" resultMap="BaseResultMap" parameterType="com.sumao.model.Paycostpay">
+		select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.pay_costpay where paytime LIKE '%${paytime}%' and payorderid LIKE '%${payorderid}%' 
+		 and paymentcode LIKE '%${paymentcode}%' 
+		
+	</select>
+	
+	<select id="findPayrTotal" resultType="java.lang.Integer" parameterType="com.sumao.model.Paycostpay">
+		select count(ID) from (select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.pay_costpay where paytime LIKE '%${paytime}%' and payorderid LIKE '%${payorderid}%' 
+		 and paymentcode LIKE '%${paymentcode}%') 
+	</select>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.pay_costpay where ID = #{id,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from uat_prod0109.pay_costpay
+		where ID = #{id,jdbcType=VARCHAR}
+	</delete>
+	
+	<update id="editaudit" parameterType="java.lang.String">
+		update uat_prod0109.pay_costpay 
+		set remark ='已通过' 
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	<insert id="insert" parameterType="com.sumao.model.Paycostpay">
+		insert into uat_prod0109.pay_costpay (ID, seller, marketing, marketingid, paymentcode, subitemname, 
+		totalitemname, financeacc, shouldpay, actualpay,paymentmethod,payorderid,paytime,createperson,createtime,remark,codeid) values (
+		#{id,jdbcType=VARCHAR},
+		#{seller,jdbcType=VARCHAR},
+		#{marketing,jdbcType=VARCHAR},
+		#{marketingid,jdbcType=VARCHAR},
+		#{paymentcode,jdbcType=VARCHAR},
+		#{subitemname,jdbcType=VARCHAR},
+		#{totalitemname,jdbcType=VARCHAR},
+		#{financeacc,jdbcType=VARCHAR},
+		#{shouldpay,jdbcType=VARCHAR},
+		#{actualpay,jdbcType=VARCHAR},
+		#{paymentmethod,jdbcType=VARCHAR},
+		#{payorderid,jdbcType=VARCHAR},
+		#{paytime,jdbcType=VARCHAR},
+		#{createperson,jdbcType=VARCHAR},
+		#{createtime,jdbcType=VARCHAR},
+		#{remark,jdbcType=VARCHAR},
+		#{codeid,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<update id="updateByPrimaryKey" parameterType="com.sumao.model.Paycostpay">
+		update uat_prod0109.pay_costpay 
+		set 
+		seller = #{seller,jdbcType=VARCHAR},
+		marketing =	#{marketing,jdbcType=VARCHAR},
+		marketingid =#{marketingid,jdbcType=VARCHAR},
+		paymentcode =#{paymentcode,jdbcType=VARCHAR},
+		subitemname =#{subitemname,jdbcType=VARCHAR},
+		totalitemname =#{totalitemname,jdbcType=VARCHAR},
+		financeacc =#{financeacc,jdbcType=VARCHAR},
+		shouldpay =#{shouldpay,jdbcType=VARCHAR},
+		actualpay =#{actualpay,jdbcType=VARCHAR},
+		paymentmethod =#{paymentmethod,jdbcType=VARCHAR},
+		payorderid =#{payorderid,jdbcType=VARCHAR},
+		paytime =#{paytime,jdbcType=VARCHAR},
+		createperson =#{createperson,jdbcType=VARCHAR},
+		createtime =#{createtime,jdbcType=VARCHAR},
+		remark =#{remark,jdbcType=VARCHAR} 
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	
+	
+	
+	<!-- 查询保证金缴费查看列表 -->
+	<select id="findPayrcostList" resultMap="BaseResultMap" parameterType="com.sumao.model.Paycostpay">
+		 select * from (select pb.marketingid,'--' as id,pb.minpayamount as subitemname,pb.warningsum as totalitemname,
+(case when pb.remark1 is null then '未支付' else '' end ) as financeacc,'--' as actualpay,'--' as paymentmethod,
+'--' as paytime,'--' as remark,pb.totalitemname as createperson,pb.subitemname as createtime from uat_prod0109.pay_bond pb where pb.marketingid='${marketingid}' and pb.subitemname like '%保证金%') bd  where financeacc LIKE '%${financeacc}%'
+union all 
+select * from (
+select * from (select t.marketingid,t.id,pb.minpayamount as subitemname,pb.warningsum as totalitemname,
+pb.payment as financeacc,t.actualpay,t.paymentmethod,t.paytime,t.remark,pb.totalitemname as createperson,pb.subitemname as createtime 
+ from uat_prod0109.pay_costpay t left join uat_prod0109.pay_bond pb on t.paymentcode=pb.id where t.codeid='bond') cost 
+  where cost.MARKETINGID LIKE '%${marketingid}%' and cost.financeacc LIKE '%${financeacc}%' order by cost.paytime desc) c 
+	</select>
+	
+	<select id="findPayrcostTotal" resultType="java.lang.Integer" parameterType="com.sumao.model.Paycostpay">
+		select count(ID)
+		from (select * from (select pb.marketingid,'--' as id,pb.minpayamount as subitemname,pb.warningsum as totalitemname,
+(case when pb.remark1 is null then '未支付' else '' end ) as financeacc,'' as actualpay,'' as paymentmethod,
+'' as paytime,'' as remark from uat_prod0109.pay_bond pb where pb.marketingid='${marketingid}'  and pb.subitemname like '%保证金%') bd where financeacc LIKE '%${financeacc}%'
+union all 
+select * from (
+select * from (select t.marketingid,t.id,pb.minpayamount as subitemname,pb.warningsum as totalitemname,
+pb.payment as financeacc,t.actualpay,t.paymentmethod,t.paytime,t.remark
+ from uat_prod0109.pay_costpay t left join uat_prod0109.pay_bond pb on t.paymentcode=pb.id where t.codeid='bond') cost 
+  where cost.MARKETINGID LIKE '%${marketingid}%' and cost.financeacc LIKE '%${financeacc}%' order by cost.paytime desc) c) 
+	</select>
+	
+	<!-- 查询保证金缴费查看列表 -->
+	<select id="findPayallchList" resultMap="BaseResultMap" parameterType="com.sumao.model.Paycostpay">
+		 select * from (select pb.marketingid,'--' as id,pb.minpayamount as subitemname,pb.warningsum as totalitemname,
+(case when pb.remark1 is null then '未支付' else '' end ) as financeacc,pb.whetheralerted as codeid,'--' as actualpay,'--' as paymentmethod,
+'--' as paytime,'--' as remark,pb.seller as seller,pb.marketing as marketing,pb.subitemname as shouldpay from uat_prod0109.pay_bond pb where pb.subitemname like '%保证金%') bd  where seller LIKE '%${seller}%' and MARKETING LIKE '%${marketing}%' and financeacc LIKE '%${financeacc}%' and shouldpay LIKE '%${shouldpay}%'
+union all 
+select * from (
+select * from (select t.marketingid,t.id,pb.minpayamount as subitemname,pb.warningsum as totalitemname,
+pb.payment as financeacc,pb.whetheralerted as codeid,t.actualpay,t.paymentmethod,t.paytime,t.remark,t.seller,t.marketing,t.subitemname as shouldpay
+ from uat_prod0109.pay_costpay t left join uat_prod0109.pay_bond pb on t.paymentcode=pb.id where t.codeid='bond') cost 
+  where cost.seller LIKE '%${seller}%' and cost.MARKETING LIKE '%${marketing}%' and cost.financeacc 
+  LIKE '%${financeacc}%' and shouldpay LIKE '%${shouldpay}%' order by cost.paytime desc) c 
+	</select>
+	
+	<select id="findPayallchTotal" resultType="java.lang.Integer" parameterType="com.sumao.model.Paycostpay">
+		select count(ID)
+		from (select * from (select pb.marketingid,'--' as id,pb.minpayamount as subitemname,pb.warningsum as totalitemname,
+(case when pb.remark1 is null then '未支付' else '' end ) as financeacc,'' as actualpay,'' as paymentmethod,
+'' as paytime,'' as remark,pb.seller as seller,pb.marketing as marketing,pb.subitemname as shouldpay from uat_prod0109.pay_bond pb where pb.subitemname like '%保证金%') bd where seller LIKE '%${seller}%' and MARKETING LIKE '%${marketing}%' and financeacc LIKE '%${financeacc}%' and shouldpay LIKE '%${shouldpay}%'
+union all 
+select * from (
+select * from (select t.marketingid,t.id,pb.minpayamount as subitemname,pb.warningsum as totalitemname,
+pb.payment as financeacc,t.actualpay,t.paymentmethod,t.paytime,t.remark,t.seller,t.marketing,t.subitemname as shouldpay
+ from uat_prod0109.pay_costpay t left join uat_prod0109.pay_bond pb on t.paymentcode=pb.id where t.codeid='bond') cost 
+  where cost.seller LIKE '%${seller}%' and cost.MARKETING LIKE '%${marketing}%' and cost.financeacc 
+  LIKE '%${financeacc}%' and shouldpay LIKE '%${shouldpay}%' order by cost.paytime desc) c) 
+	</select>
+	
+	<select id="selectgoldsub" resultMap="BaseResultMap">
+		select distinct sub.subname as subitemname 
+		from uat_prod0109.pay_subitems sub left join uat_prod0109.pay_totalitems tot on tot.totalname=sub.totalname where tot.totaltype='保证金' 	
+	</select>
+	
+	<select id="getprovingused" resultType="java.lang.Integer" parameterType="java.lang.String">
+		select count(ID) from (select 
+		<include refid="Base_Column_List" /> from uat_prod0109.pay_costpay where paymentcode= #{paymentcode,jdbcType=VARCHAR})
+	</select>
+</mapper>

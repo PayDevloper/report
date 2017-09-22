@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sumao.dao.Pay_rightgoldMapper">
+	<!-- 表和模型映射关系维护 -->
+	<resultMap id="BaseResultMap" type="com.sumao.model.Pay_rightgold" >
+    <result column="SELLER" property="seller" jdbcType="VARCHAR" />
+    <result column="MARKETING" property="marketing" jdbcType="VARCHAR" />
+    <result column="MARKETINGID" property="marketingid" jdbcType="VARCHAR" />
+    <result column="SUBITEMCODE" property="subitemcode" jdbcType="VARCHAR" />
+    <result column="SUBITEMNAME" property="subitemname" jdbcType="VARCHAR" />
+    <result column="TOTALITEMNAME" property="totalitemname" jdbcType="VARCHAR" />
+    <result column="FINANCEACC" property="financeacc" jdbcType="VARCHAR" />
+    <result column="CREATEPERSON" property="createperson" jdbcType="VARCHAR" />
+    <result column="CREATETIME" property="createtime" jdbcType="VARCHAR" />
+    <result column="APPROVE" property="approve" jdbcType="VARCHAR" />
+    <result column="PAYMENT" property="payment" jdbcType="VARCHAR" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <result column="REMARK1" property="remark1" jdbcType="VARCHAR" />
+    <result column="REMARK2" property="remark2" jdbcType="VARCHAR" />
+    <result column="REMARK3" property="remark3" jdbcType="VARCHAR" />
+    <result column="REMARK4" property="remark4" jdbcType="VARCHAR" />
+    <result column="REMARK5" property="remark5" jdbcType="VARCHAR" />
+    <result column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="PAYAMOUNT" property="payamount" jdbcType="VARCHAR" />
+    <result column="STARTDATE" property="startdate" jdbcType="VARCHAR" />
+    <result column="ENDDATE" property="enddate" jdbcType="VARCHAR" />
+    <result column="auditperson" property="auditperson" jdbcType="VARCHAR" />
+    <result column="audittime" property="audittime" jdbcType="VARCHAR" />
+  </resultMap>
+  
+	<resultMap id="UserResultMap" type="com.sumao.model.Pay_userorg">
+		<result column="SELLER" property="seller" jdbcType="VARCHAR" />
+    	<result column="MARKETING" property="marketing" jdbcType="VARCHAR" />
+   		<result column="MARKETINGID" property="marketingid" jdbcType="VARCHAR" />
+		
+	</resultMap>
+	
+	<resultMap id="CheckResultMap" type="com.sumao.model.Pay_rightgoldcheck">
+		<result column="seller" property="seller" jdbcType="VARCHAR" />
+    	<result column="marketing" property="marketing" jdbcType="VARCHAR" />
+		<result column="paymentcode" property="paymentcode" jdbcType="VARCHAR" />
+		<result column="subitemname" property="subitemname" jdbcType="VARCHAR" />
+    	<result column="totalname" property="totalname" jdbcType="VARCHAR" />
+   		<result column="startdate" property="startdate" jdbcType="VARCHAR" />
+   		<result column="enddate" property="enddate" jdbcType="VARCHAR" />
+   		<result column="payamount" property="payamount" jdbcType="VARCHAR" />
+		<result column="payment" property="payment" jdbcType="VARCHAR" />
+		<result column="shouldpay" property="shouldpay" jdbcType="VARCHAR" />
+		<result column="actualpay" property="actualpay" jdbcType="VARCHAR" />
+		<result column="paymentmethod" property="paymentmethod" jdbcType="VARCHAR" />
+		<result column="paytime" property="paytime" jdbcType="VARCHAR" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="currentstate" property="currentstate" jdbcType="VARCHAR" />
+		<result column="marketingid" property="marketingid" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 表的字段属性 -->
+	<sql id="Base_Column_List">
+		SELLER, MARKETING, MARKETINGID, SUBITEMCODE, SUBITEMNAME, TOTALITEMNAME, FINANCEACC, 
+    CREATEPERSON, CREATETIME, APPROVE, PAYMENT, REMARK, REMARK1, REMARK2, REMARK3, REMARK4, 
+    REMARK5, ID, PAYAMOUNT, STARTDATE, ENDDATE,auditperson,audittime
+	</sql>
+
+	<!-- 查询信息列表 -->
+	<select id="findPayrList" resultMap="BaseResultMap" parameterType="com.sumao.model.Pay_rightgold">
+		select distinct prd.SELLER as SELLER, prd.MARKETING as MARKETING, prd.MARKETINGID as MARKETINGID, prd.SUBITEMCODE as SUBITEMCODE, 
+		prd.SUBITEMNAME as SUBITEMNAME, prd.TOTALITEMNAME as TOTALITEMNAME, prd.FINANCEACC as FINANCEACC, 
+   		 prd.CREATEPERSON as CREATEPERSON, prd.CREATETIME as CREATETIME, prd.APPROVE as APPROVE, prd.PAYMENT as PAYMENT, 
+   		 prd.REMARK as REMARK,(case when pcy.id is null then '未支付' else '已支付' end ) as REMARK1, 
+   		 prd.REMARK2 as REMARK2, prd.REMARK3 as REMARK3, prd.REMARK4 as REMARK4, 
+   		 prd.REMARK5 as REMARK5, prd.ID as ID, prd.PAYAMOUNT as PAYAMOUNT, prd.STARTDATE as STARTDATE, 
+   		 prd.ENDDATE as ENDDATE, prd.auditperson as auditperson, prd.audittime as audittime
+		from uat_prod0109.PAY_RIGHTGOLD prd left join uat_prod0109.pay_costpay pcy on prd.id=pcy.paymentcode 
+		where prd.seller LIKE '%${seller}%' and prd.MARKETING LIKE '%${marketing}%' 
+		 and prd.MARKETINGID LIKE '%${marketingid}%' and prd.subitemname LIKE '%${subitemname}%' 
+		 and prd.financeacc LIKE '%${financeacc}%' 
+		
+	</select>
+	
+	<select id="findPayrTotal" resultType="java.lang.Integer" parameterType="com.sumao.model.Pay_rightgold">
+		select count(ID) from (select distinct prd.SELLER as SELLER, prd.MARKETING as MARKETING, prd.MARKETINGID as MARKETINGID, prd.SUBITEMCODE as SUBITEMCODE, 
+		prd.SUBITEMNAME as SUBITEMNAME, prd.TOTALITEMNAME as TOTALITEMNAME, prd.FINANCEACC as FINANCEACC, 
+   		 prd.CREATEPERSON as CREATEPERSON, prd.CREATETIME as CREATETIME, prd.APPROVE as APPROVE, prd.PAYMENT as PAYMENT, 
+   		 prd.REMARK as REMARK,(case when pcy.id is null then '未支付' else '已支付' end ) as REMARK1, 
+   		 prd.REMARK2 as REMARK2, prd.REMARK3 as REMARK3, prd.REMARK4 as REMARK4, 
+   		 prd.REMARK5 as REMARK5, prd.ID as ID, prd.PAYAMOUNT as PAYAMOUNT, prd.STARTDATE as STARTDATE, 
+   		 prd.ENDDATE as ENDDATE, prd.auditperson as auditperson, prd.audittime as audittime
+		from uat_prod0109.PAY_RIGHTGOLD prd left join uat_prod0109.pay_costpay pcy on prd.id=pcy.paymentcode 
+		where prd.seller LIKE '%${seller}%' and prd.MARKETING LIKE '%${marketing}%' 
+		 and prd.MARKETINGID LIKE '%${marketingid}%' and prd.subitemname LIKE '%${subitemname}%' 
+		 and prd.financeacc LIKE '%${financeacc}%') 
+	</select>
+	
+	<select id="getUserorgBy" resultMap="UserResultMap" parameterType="com.sumao.model.Pay_userorg">
+		 select * from (select distinct dorgid.org_id as MARKETINGID,dorg.name as MARKETING,compy.display_name as SELLER  
+  from uat_PUB0109.sumao_dpi_organization dorgid 
+ left join uat_PUB0109.dpi_organization dorg on dorgid.org_id=dorg.org_id 
+ left join uat_PROD0109.sumao_mst_source_company compy on dorgid.supplier_contact=compy.id) 
+ where  MARKETINGID=#{marketingid,jdbcType=VARCHAR} 
+	</select>
+	
+	
+	<!-- 查询通过审核的截止日期 -->
+	<select id="getproving" resultMap="BaseResultMap" parameterType="com.sumao.model.Pay_rightgold">
+		select ENDDATE from uat_prod0109.PAY_RIGHTGOLD
+		where marketingid = #{marketingid,jdbcType=VARCHAR} and subitemcode = #{subitemcode,jdbcType=VARCHAR} and enddate!=' ' and ID!=#{id,jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from uat_prod0109.PAY_RIGHTGOLD where ID = #{id,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from uat_prod0109.PAY_RIGHTGOLD
+		where ID = #{id,jdbcType=VARCHAR}
+	</delete>
+	
+	<update id="editaudit" parameterType="com.sumao.model.Pay_rightgold">
+		update uat_prod0109.PAY_RIGHTGOLD 
+		set approve =#{approve,jdbcType=VARCHAR},auditperson =#{auditperson,jdbcType=VARCHAR},audittime =#{audittime,jdbcType=VARCHAR} 
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	
+	<update id="editBondByID" parameterType="com.sumao.model.Pay_rightgold">
+		update uat_prod0109.PAY_RIGHTGOLD 
+		set payment ='已支付' 
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	
+	<insert id="insert" parameterType="com.sumao.model.Pay_rightgold">
+		insert into uat_prod0109.PAY_RIGHTGOLD (SELLER, MARKETING, MARKETINGID, 
+      SUBITEMCODE, SUBITEMNAME, TOTALITEMNAME, 
+      FINANCEACC, CREATEPERSON, CREATETIME, 
+      APPROVE, PAYMENT, REMARK, ID, 
+      PAYAMOUNT, STARTDATE, ENDDATE
+      )
+    values (#{seller,jdbcType=VARCHAR}, #{marketing,jdbcType=VARCHAR}, #{marketingid,jdbcType=VARCHAR}, 
+      #{subitemcode,jdbcType=VARCHAR}, #{subitemname,jdbcType=VARCHAR}, #{totalitemname,jdbcType=VARCHAR}, 
+      #{financeacc,jdbcType=VARCHAR}, #{createperson,jdbcType=VARCHAR}, #{createtime,jdbcType=VARCHAR}, 
+      #{approve,jdbcType=VARCHAR}, #{payment,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{id,jdbcType=VARCHAR}, 
+      #{payamount,jdbcType=VARCHAR}, #{startdate,jdbcType=VARCHAR}, #{enddate,jdbcType=VARCHAR}
+      )
+	</insert>
+	
+	<update id="updateByPrimaryKey" parameterType="com.sumao.model.Pay_rightgold">
+		update uat_prod0109.PAY_RIGHTGOLD set SELLER = #{seller,jdbcType=VARCHAR},
+      MARKETING = #{marketing,jdbcType=VARCHAR},
+      MARKETINGID = #{marketingid,jdbcType=VARCHAR},
+      SUBITEMCODE = #{subitemcode,jdbcType=VARCHAR},
+      SUBITEMNAME = #{subitemname,jdbcType=VARCHAR},
+      TOTALITEMNAME = #{totalitemname,jdbcType=VARCHAR},
+      FINANCEACC = #{financeacc,jdbcType=VARCHAR},
+      CREATEPERSON = #{createperson,jdbcType=VARCHAR},
+      CREATETIME = #{createtime,jdbcType=VARCHAR},
+      APPROVE = #{approve,jdbcType=VARCHAR},
+      REMARK = #{remark,jdbcType=VARCHAR},
+      PAYAMOUNT = #{payamount,jdbcType=VARCHAR},
+      STARTDATE = #{startdate,jdbcType=VARCHAR},
+      ENDDATE = #{enddate,jdbcType=VARCHAR} 
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 查询信息列表 -->
+	<select id="findPayrchList" resultMap="CheckResultMap" parameterType="com.sumao.model.Pay_rightgoldcheck">
+		select * from (select 
+		(case when cos.id is null then '--' else cos.id end) as id,gol.totalitemname as totalname,gol.subitemname as subitemname,gol.startdate as startdate,gol.enddate as enddate,gol.payamount as payamount,gol.payment as payment,
+		(case when cos.shouldpay is null then '--' else cos.shouldpay end) as shouldpay,(case when cos.actualpay is null then '--' else cos.actualpay end) as actualpay,
+		(case when cos.paymentmethod is null then '--' else cos.paymentmethod end) as paymentmethod,(case when cos.paytime is null then '--' else cos.paytime end) as paytime,cos.remark as remark, 
+		(case when gol.payment='已支付' and gol.startdate<![CDATA[<=]]>(select to_char(sysdate,'yyyy-mm-dd') from dual) and gol.enddate<![CDATA[>=]]>(select to_char(sysdate,'yyyy-mm-dd') from dual) then '有效' 
+		when gol.payment='未支付' then '--' else '无效' end ) as currentstate ,gol.marketingid as marketingid,gol.seller as seller,gol.marketing as marketing
+		from uat_prod0109.pay_rightgold gol left join uat_prod0109.pay_costpay cos on gol.id=cos.paymentcode )
+		where subitemname LIKE '%${subitemname}%' and startdate<![CDATA[>=]]>#{startdate} 
+		and enddate<![CDATA[<=]]>#{enddate} and payment LIKE '%${payment}%' and marketingid=#{marketingid} order by payment,paytime desc
+		
+	</select>
+	
+	<select id="findPayrchTotal" resultType="java.lang.Integer" parameterType="com.sumao.model.Pay_rightgoldcheck">
+		select count(payment) from (select
+		cos.id as id,gol.subitemname as subitemname,gol.startdate as startdate,gol.enddate as enddate,gol.payamount as payamount,gol.payment as payment,cos.shouldpay as shouldpay,cos.actualpay as actualpay,cos.paymentmethod as paymentmethod,cos.paytime as paytime,cos.remark as remark,gol.marketingid as marketingid,gol.seller as seller,gol.marketing as marketing 
+		from uat_prod0109.pay_rightgold gol left join uat_prod0109.pay_costpay cos on gol.id=cos.paymentcode) 
+		where subitemname LIKE '%${subitemname}%' and startdate<![CDATA[>=]]>#{startdate} 
+		and enddate<![CDATA[<=]]>#{enddate} and payment LIKE '%${payment}%' and marketingid=#{marketingid}	
+	</select>
+	
+	<select id="selectgoldsub" resultMap="CheckResultMap">
+		select distinct sub.subname as subitemname 
+		from uat_prod0109.pay_subitems sub left join uat_prod0109.pay_totalitems tot on tot.totalname=sub.totalname where tot.totaltype='权利金' 	
+	</select>
+	
+	<!-- 查询信息列表 -->
+	<select id="findPayallchList" resultMap="CheckResultMap" parameterType="com.sumao.model.Pay_rightgoldcheck">
+		select * from (select 
+		(case when cos.id is null then '--' else cos.id end) as id,gol.subitemname as subitemname,gol.startdate as startdate,gol.enddate as enddate,gol.payamount as payamount,gol.payment as payment,
+		(case when cos.shouldpay is null then '--' else cos.shouldpay end) as shouldpay,(case when cos.actualpay is null then '--' else cos.actualpay end) as actualpay,
+		(case when cos.paymentmethod is null then '--' else cos.paymentmethod end) as paymentmethod,(case when cos.paytime is null then '--' else cos.paytime end) as paytime,cos.remark as remark, 
+		(case when gol.payment='已支付' and gol.startdate<![CDATA[<=]]>(select to_char(sysdate,'yyyy-mm-dd') from dual) and gol.enddate<![CDATA[>=]]>(select to_char(sysdate+7,'yyyy-mm-dd') from dual) then '有效' 
+		 when gol.payment='已支付' and gol.startdate<![CDATA[<=]]>(select to_char(sysdate,'yyyy-mm-dd') from dual) and gol.enddate<![CDATA[>=]]>(select to_char(sysdate,'yyyy-mm-dd') from dual) then '近期' 
+		when gol.payment='未支付' then '--' else '无效' end ) as currentstate ,gol.marketingid as marketingid,gol.seller as seller,gol.marketing as marketing
+		from uat_prod0109.pay_rightgold gol left join uat_prod0109.pay_costpay cos on gol.id=cos.paymentcode )
+		where seller LIKE '%${seller}%' and marketing LIKE '%${marketing}%' and payment LIKE '%${payment}%' and subitemname LIKE '%${subitemname}%' order by payment,paytime desc
+		
+	</select>
+	
+	<select id="findPayallchTotal" resultType="java.lang.Integer" parameterType="com.sumao.model.Pay_rightgoldcheck">
+		select count(payment) from (select
+		cos.id as id,gol.subitemname as subitemname,gol.startdate as startdate,gol.enddate as enddate,gol.payamount as payamount,gol.payment as payment,cos.shouldpay as shouldpay,cos.actualpay as actualpay,cos.paymentmethod as paymentmethod,cos.paytime as paytime,cos.remark as remark,gol.marketingid as marketingid,gol.seller as seller,gol.marketing as marketing 
+		from uat_prod0109.pay_rightgold gol left join uat_prod0109.pay_costpay cos on gol.id=cos.paymentcode) 
+		where seller LIKE '%${seller}%' and marketing LIKE '%${marketing}%' and payment LIKE '%${payment}%' and subitemname LIKE '%${subitemname}%'
+	</select>
+	
+</mapper>

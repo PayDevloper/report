@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sumao.dao.NavigationMapper">
+	<resultMap id="NavigationMap" type="com.sumao.model.Paysub">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="PID" property="subname" jdbcType="VARCHAR" />
+		<result column="TEXT" property="financeacc" jdbcType="VARCHAR" />
+        <result column="SRC" property="totalid" jdbcType="VARCHAR" />
+		<result column="SYSCODE" property="totalname" jdbcType="VARCHAR" />
+		<result column="MLEVEL" property="operdate" jdbcType="VARCHAR" />	
+		<result column="REMARK1" property="remark1" jdbcType="VARCHAR" />
+		<result column="ISBASIC" property="codeid" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<!-- 角色表的字段属性 -->
+	<sql id="Navigation_Column_List">
+		ID, PID, TEXT,SRC,SYSCODE,MLEVEL,REMARK1,ISBASIC
+	</sql>
+	
+	<!-- 查询资源信息列表 -->
+	<select id="findAuthsort" resultMap="NavigationMap" parameterType="com.sumao.model.Paysub">
+		select
+		<include refid="Navigation_Column_List" />
+		from UAT_PROD0109.SYMENU where  PID='0'
+	</select>
+	
+	<select id="findSubauthort" resultMap="NavigationMap" parameterType="java.util.Map">
+		select
+		*
+		from UAT_PROD0109.SYROLE_SYRESOURCES 
+	</select>
+	<select id="findAuthbasic" resultMap="NavigationMap" parameterType="java.lang.String">
+		select
+		<include refid="Navigation_Column_List" />
+		from UAT_PROD0109.SYMENU where  isbasic=#{basic,jdbcType=VARCHAR}
+	</select>
+</mapper>
